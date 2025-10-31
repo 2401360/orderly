@@ -17,7 +17,7 @@ require 'header.php'; ?>
         <?php
         $pdo = new PDO($connect, USER, PASS);
         $sql = $pdo->query('SELECT * FROM product ORDER BY id LIMIT 4');
-        // 画像挿入が必要
+        // 画像挿入が必要。
         foreach ($sql as $row):
             $id = (int)$row['id'];
         ?>
