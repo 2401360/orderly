@@ -17,6 +17,9 @@ require 'header.php'; ?>
         <?php
         $pdo = new PDO($connect, USER, PASS);
         $sql = $pdo->query('SELECT * FROM product WHERE id NOT IN (1, 3, 5, 8) ORDER BY id LIMIT 4');
+        $sql = $pdo->query('SELECT * FROM product WHERE id NOT IN (1, 3, 5, 8) ORDER BY id LIMIT 4');
+        var_dump($sql->rowCount());
+
         // 画像挿入が必要。
         foreach ($sql as $row):
             $id = (int)$row['id'];
