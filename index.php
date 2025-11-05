@@ -10,7 +10,6 @@ require 'header.php'; ?>
             <a class="btn btn-primary btn-lg" href="product.php"><i class="bi bi-bag"></i> Shop Now</a>
         </div>
     </div>
-    <!-- 上記のメッセージは無くす。理由：動画の中にメッセージを表示させるため。 -->
 
     <h2 class="h4 mb-3">デザート</h2>
     <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
