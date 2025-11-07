@@ -19,7 +19,7 @@ try {
     $login    = post('login');
     $password = post('password');
 
-    // 入力バリデーション
+    
     $errors = [];
     if ($name === '')     $errors[] = '名前を入力してください。';
     if ($address === '')  $errors[] = '住所を入力してください。';
@@ -34,7 +34,7 @@ try {
         exit;
     }
 
-    // ログイン名の重複チェック
+    
     if (isset($_SESSION['customer'])) {
         $id  = (int)$_SESSION['customer']['id'];
         $chk = $pdo->prepare('SELECT id FROM customer WHERE id != ? AND login = ? LIMIT 1');
@@ -49,16 +49,16 @@ try {
         exit;
     }
 
-    // ハッシュ作成
+    
     $hash = password_hash($password, PASSWORD_DEFAULT);
 
     if (isset($_SESSION['customer'])) {
-        // 更新
+        
         $id  = (int)$_SESSION['customer']['id'];
         $upd = $pdo->prepare('UPDATE customer SET name=?, address=?, login=?, password=? WHERE id=?');
         $upd->execute([$name, $address, $login, $hash, $id]);
 
-        // セッション更新
+        
         $_SESSION['customer'] = [
             'id'      => $id,
             'name'    => $name,
@@ -67,11 +67,11 @@ try {
         ];
         echo '<div class="container pt-3"><div class="alert alert-success">お客様情報を更新しました。</div></div>';
     } else {
-        // 新規登録
+        
         $ins = $pdo->prepare('INSERT INTO customer (name, address, login, password) VALUES (?, ?, ?, ?)');
         $ins->execute([$name, $address, $login, $hash]);
 
-        // 自動ログイン（任意）
+        
         $newId = (int)$pdo->lastInsertId();
         $_SESSION['customer'] = [
             'id'      => $newId,
@@ -84,7 +84,7 @@ try {
 
     echo '<div class="container pb-3"><a class="btn btn-primary" href="index.php">トップへ</a></div>';
 } catch (Throwable $e) {
-    // エラーメッセージを出す（本番ではログに記録推奨）
+    
     echo '<div class="container pt-3"><div class="alert alert-danger">登録処理でエラーが発生しました。</div></div>';
 }
 require 'footer.php';

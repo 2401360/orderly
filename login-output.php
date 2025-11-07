@@ -14,8 +14,10 @@ try {
     $sql->execute([$_POST['login'] ?? '']);
     $user = $sql->fetch();
     $ok = $user && password_verify($_POST['password'] ?? '', $user['password']);
-    // Small delay to make brute force slightly harder (adjust or replace with proper throttling)
-    if (!$ok) { usleep(250000); }
+
+    if (!$ok) {
+        usleep(250000);
+    }
     if ($ok) {
         session_regenerate_id(true);
         $_SESSION['customer'] = [
@@ -23,6 +25,8 @@ try {
             'name'    => $user['name'],
             'address' => $user['address'],
             'login'   => $user['login'],
+            'role'   => $user['role'],
+
         ];
         echo '<div class="container pt-3"><div class="alert alert-success">いらっしゃいませ、' . e($_SESSION['customer']['name']) . ' さん。</div></div>';
     } else {
