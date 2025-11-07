@@ -1,6 +1,7 @@
 <?php $page_title='Confirm Purchase'; require 'header.php'; ?>
 <div class="container py-4 content-narrow">
 
+
   <style>
 .customer-info {
   background: #f8f9fa; /* màu nền nhẹ */
