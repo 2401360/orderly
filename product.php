@@ -1,6 +1,6 @@
 <?php $page_title='Products'; require 'header.php'; ?>
 <?php require 'db-connect.php'; ?>
-<div class="container py-4">
+<link href="css/style.css" rel="stylesheet"><div class="container py-4">
   <h1 class="h4 mb-3">商品一覧</h1>
   <form method="get" class="row g-2 mb-3 content-narrow">
     <div class="col-sm-9">
@@ -11,7 +11,10 @@
     </div>
   </form>
 
-  <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+  <div class="showcase-container">
+  <!-- 背景 -->
+  <img src="image/background4.png" alt="ショーケース背景" class="showcase-bg">
+  <div class="cake-area">
   <?php
     $pdo = new PDO($connect, USER, PASS, [
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -20,31 +23,36 @@
     ]);
     $kw = trim($_GET['keyword'] ?? '');
     if ($kw !== '') {
+      //  検索モード
       $like = '%' . str_replace(['%', '_'], ['\%','\_'], $kw) . '%';
       $sql = $pdo->prepare("SELECT * FROM product WHERE name LIKE ? ESCAPE '\\' ORDER BY id");
       $sql->execute([$like]);
+
     } else {
       $sql = $pdo->query('SELECT * FROM product ORDER BY id');
     }
-    foreach ($sql as $row):
-      $id = (int)$row['id'];
+    // 最大12件（3段×4個）まで表示
+        $tiers = [
+            array_slice($sql, 0, 4),
+            array_slice($sql, 4, 4),
+            array_slice($sql, 8, 4),
+        ];
+
+      $tiers_y = [200, 360, 520]; // 各段のbottom位置
+  foreach ($tiers as $tier_index => $cakes):
+      $tier_y = $tiers_y[$tier_index] ?? null;
   ?>
-    <div class="col">
-      <div class="card h-100 card-hover">
-        <?php if (!empty($row['image_url'])): ?>
-          <img src="<?= e($row['image_url']) ?>" class="card-img-top" alt="<?= e($row['name']) ?>">
-        <?php endif; ?>
-        <div class="card-body d-flex flex-column">
-          <h3 class="h6 card-title mb-1"><?= e($row['name']) ?></h3>
-          <div class="text-muted mb-3">¥<?= number_format((int)$row['price']) ?></div>
-          <div class="mt-auto d-flex gap-2">
-            <a class="btn btn-sm btn-outline-secondary" href="detail.php?id=<?= $id ?>"><i class="bi bi-info-circle"></i> Details</a>
-            <a class="btn btn-sm btn-outline-danger" href="favorite-insert.php?id=<?= $id ?>"><i class="bi bi-heart"></i></a>
+    <div class="showcase-tier" style="bottom: <?= $tier_y ?>px;">
+      <img src="image/single_showcase.png" alt="ショーケース棚" class="shelf">
+        <?php foreach ($cakes as $i => $cake): ?>
+          <div class="cake-item" >
+            <img src="image/plate.png" class="plate" alt="皿">
+            <img src="<?= e($cake['image_url']) ?>" class="cake-img" alt="<?= e($cake['name']) ?>">
           </div>
-        </div>
-      </div>
+        <?php endforeach; ?>
     </div>
   <?php endforeach; ?>
   </div>
+</div>
 </div>
 <?php require 'footer.php'; ?>

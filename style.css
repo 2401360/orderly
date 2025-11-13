@@ -1,0 +1,81 @@
+.showcase-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  aspect-ratio: 800 / 1344; /* 背景画像の縦横比 */
+  overflow: hidden;
+  background: black;
+}
+
+/* 背景 */
+.showcase-bg {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.cake-area {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* 各段 */
+.showcase-tier {
+  position: absolute;
+  width: 60%; 
+  height: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  z-index: 3; 
+}
+
+/* 棚画像 */
+.shelf {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+}
+
+/* ケーキ＋皿 */
+.cake-item {
+  position: relative;
+  width: 20%; /* roughly 4 cakes per row */
+  text-align: center;
+}
+
+/* 皿 */
+.plate {
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 4;
+}
+
+/* ケーキ画像 */
+.cake-img {
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-height: 100px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  z-index: 5;
+}
+
+/* hover effect */
+.cake-item:hover .cake-img {
+  transform: translateX(-50%) translateY(-10px);
+}
