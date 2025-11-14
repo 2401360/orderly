@@ -84,6 +84,17 @@ CREATE TABLE review (
   CONSTRAINT fk_rev_product  FOREIGN KEY (product_id)  REFERENCES product(id)  ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT fk_rev_customer FOREIGN KEY (customer_id) REFERENCES customer(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- create table commment(tam)
+CREATE TABLE comment (
+  comment_id      INT AUTO_INCREMENT PRIMARY KEY,
+  product_id  INT NOT NULL,
+  user     TEXT,
+  comment   TEXT,
+  created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_comment_product
+    FOREIGN KEY (product_id)  REFERENCES product(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ===== 7) 初期データ：商品 =====
 INSERT INTO product (name, price, image_url, description) VALUES
