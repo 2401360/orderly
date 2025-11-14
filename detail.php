@@ -1,234 +1,280 @@
-<?php require 'db-connect.php';
-$pdo = new PDO($connect, USER, PASS, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
-if (isset($_POST['button']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $pid = $_POST['productid'];
-    $username = trim($_POST['username']);
-    $content = trim($_POST['content']);
-
-    if (!empty($username) && !empty($content)) {
-        $sql = "INSERT INTO comment(product_id, user, comment) VALUES (?, ?, ?)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$pid, $username, $content]);
-    }
-    header("Location: " . $_SERVER['REQUEST_URI']);
-    exit;
-}
-$page_title = 'Product Detail';
-require 'header.php';
-?>
-<style>
-  .comment-section {
-  background: #fafafa;
-  border-radius: 18px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-  padding: 30px;
-  margin: 70px auto 50px;
-  max-width: 800px;
-  font-family: "Noto Sans JP", "Inter", sans-serif;
-  border: 1px solid #eee;
-  position: relative;
-}
-.comment-section::before {
-  content: "";
-  position: absolute;
-  top: -45px;
-  left: 10%;
-  width: 80%;
-  height: 3px;
-  background: linear-gradient(90deg, #cde8ff, #f8e6d9);
-  border-radius: 6px;
-}
-
-.comment-section h3 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #4b7ea8;
-  margin-bottom: 25px;
-  border-left: 6px solid #a3c4dc;
-  padding-left: 12px;
-}
-
-.comment-box {
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  border-radius: 12px;
-  padding: 14px 18px;
-  margin-bottom: 16px;
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-
-.comment-box:hover {
-  background: #f6faff;
-  box-shadow: 0 4px 10px rgba(200, 220, 255, 0.3);
-}
-
-.comment-box strong {
-  color: #527da3;
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-.comment-box p {
-  margin: 6px 0;
-  font-size: 0.96rem;
-  color: #444;
-  line-height: 1.6;
-}
-
-.comment-box small {
-  color: #999;
-  font-size: 0.8rem;
-}
-
-/* Form */
-.comment-form {
-  border-top: 2px dashed #e5edf2;
-  padding-top: 20px;
-  margin-top: 30px;
-}
-
-.comment-form input,
-.comment-form textarea {
-  width: 100%;
-  border: 1.5px solid #d5e1ea;
-  border-radius: 10px;
-  padding: 10px 14px;
-  margin-bottom: 12px;
-  font-size: 0.95rem;
-  background: #fff;
-  transition: border-color 0.25s, box-shadow 0.25s;
-}
-
-.comment-form input:focus,
-.comment-form textarea:focus {
-  border-color: #9ecaf2;
-  box-shadow: 0 0 6px rgba(158, 202, 242, 0.5);
-  outline: none;
-}
-
-.comment-form {
-  border-top: 2px dashed #e5edf2;
-  padding-top: 20px;
-  margin-top: 30px;
-  text-align: center; 
-}
-
-.comment-form button {
-  background: linear-gradient(90deg, #4fa3f7, #7ec6ff);
-  color: #fff;
-  border: none;
-  border-radius: 50px;
-  padding: 12px 32px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 6px 14px rgba(79, 163, 247, 0.3);
-  display: inline-block;
-}
-
-.comment-form button:hover {
-  background: linear-gradient(90deg, #3a8ce0, #69b9ff);
-  box-shadow: 0 8px 18px rgba(79, 163, 247, 0.4);
-  transform: translateY(-2px);
-}
-
-.comment-form button:active {
-  transform: scale(0.98);
-  opacity: 0.9;
-}
-
-.no-comment {
-  color: #999;
-  font-style: italic;
-  text-align: center;
-  margin: 15px 0 25px;
-}
-.fade-in {
-  animation: fadeIn 0.6s ease both;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-</style>
-<div class="container py-4 content-narrow">
 <?php
-$sql = $pdo->prepare('select * from product where id=?');
-$sql->execute([$_REQUEST['id'] ?? 0]);
-foreach ($sql as $row): ?>
-  <div class="card shadow-sm">
-    <div class="row g-0">
+if (session_status() === PHP_SESSION_NONE) session_start();
+require 'header.php';
+require_once __DIR__ . '/db-connect.php';
+
+$productId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+$pdo = new PDO($connect, USER, PASS, [
+  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+]);
+
+$cid = !empty($_SESSION['customer']['id']) ? (int)$_SESSION['customer']['id'] : 0;
+$isFav = false;
+
+// 商品情報
+$st = $pdo->prepare('SELECT id, name, price, image_url, description FROM product WHERE id = ?');
+$st->execute([$productId]);
+$product = $st->fetch();
+
+if ($cid > 0 && $product) {
+  $stFav = $pdo->prepare('SELECT 1 FROM favorite WHERE customer_id = ? AND product_id = ? LIMIT 1');
+  $stFav->execute([$cid, $productId]);
+  $isFav = (bool)$stFav->fetchColumn();
+}
+
+if (!$product) {
+  http_response_code(404);
+  echo '<div class="container py-5"><div class="alert alert-danger">商品が見つかりません。</div></div>';
+  exit;
+}
+
+// レビュー平均
+$st = $pdo->prepare('SELECT ROUND(AVG(rating),1) AS avg_rating, COUNT(*) AS cnt FROM review WHERE product_id = ?');
+$st->execute([$productId]);
+$stat = $st->fetch();
+
+// レビュー一覧
+$st = $pdo->prepare('
+  SELECT r.rating, r.comment, r.created_at, c.name
+  FROM review r
+  JOIN customer c ON c.id = r.customer_id
+  WHERE r.product_id = ?
+  ORDER BY r.created_at DESC
+  LIMIT 100
+');
+$st->execute([$productId]);
+$reviews = $st->fetchAll();
+
+// レビュー投稿権限
+$eligible = false;
+if ($cid > 0) {
+  $st = $pdo->prepare('
+    SELECT 1
+    FROM purchase_detail pd
+    JOIN purchase p ON p.id = pd.purchase_id
+    WHERE p.customer_id = ? AND pd.product_id = ?
+    LIMIT 1
+  ');
+  $st->execute([$cid, $productId]);
+  $eligible = (bool)$st->fetchColumn();
+}
+?>
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?> | 商品詳細</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container py-4">
+    <nav class="mb-3">
+      <a class="btn btn-outline-secondary btn-sm" href="index.php">← 一覧へ戻る</a>
+    </nav>
+
+    <div class="row g-4">
       <div class="col-md-5">
-        <?php if (!empty($row['image_url'])): ?>
-          <img src="<?= htmlspecialchars($row['image_url']) ?>" class="img-fluid rounded-start" alt="<?= htmlspecialchars($row['name']) ?>">
+        <?php if (!empty($product['image_url'])): ?>
+          <img class="img-fluid rounded" src="<?= htmlspecialchars($product['image_url'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?>">
         <?php endif; ?>
       </div>
+
       <div class="col-md-7">
-        <div class="card-body">
-          <h1 class="h4 mb-1"><?= htmlspecialchars($row['name']) ?></h1>
-          <div class="text-muted mb-3">¥<?= number_format($row['price']) ?></div>
-          <?php if (!empty($row['description'])): ?>
-            <p class="mb-4"><?= nl2br(htmlspecialchars($row['description'])) ?></p>
-          <?php endif; ?>
-          <form action="cart-insert.php" method="post" class="d-flex flex-wrap gap-2 align-items-end">
+        <h1 class="h3"><?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?></h1>
+        <p class="fs-4 fw-bold">¥<?= number_format((int)$product['price']) ?></p>
+        <p><?= nl2br(htmlspecialchars($product['description'] ?? '', ENT_QUOTES, 'UTF-8')) ?></p>
+
+        <div class="d-flex gap-2 mt-3 align-items-end flex-wrap">
+          <!-- カートフォーム -->
+          <form action="cart-insert.php" method="get" class="d-flex flex-wrap gap-2 align-items-end">
+            <input type="hidden" name="id" value="<?= (int)$product['id'] ?>">
+            <input type="hidden" name="product_id" value="<?= (int)$product['id'] ?>">
+            <input type="hidden" name="name" value="<?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?>">
+            <input type="hidden" name="price" value="<?= (int)$product['price'] ?>">
+
             <div>
               <label class="form-label">数量</label>
               <select name="count" class="form-select">
-                <?php for ($i=1; $i<=10; $i++): ?>
+                <?php for ($i = 1; $i <= 10; $i++): ?>
                   <option value="<?= $i ?>"><?= $i ?></option>
                 <?php endfor; ?>
               </select>
             </div>
-            <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
-            <input type="hidden" name="name" value="<?= htmlspecialchars($row['name']) ?>">
-            <input type="hidden" name="price" value="<?= (int)$row['price'] ?>">
-            <button class="btn btn-primary"><i class="bi bi-bag-plus"></i> カートに追加</button>
-            <a href="favorite-insert.php?id=<?= (int)$row['id'] ?>" class="btn btn-outline-danger"><i class="bi bi-heart"></i> お気に入り</a>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-bag-plus"></i> カートに入れる
+            </button>
           </form>
+
+          <!-- お気に入りボタン -->
+          <?php if ($cid > 0): ?>
+            <button type="button"
+              class="btn <?= $isFav ? 'btn-danger' : 'btn-outline-danger' ?> fav-btn"
+              data-id="<?= (int)$product['id'] ?>"
+              data-fav="<?= $isFav ? '1' : '0' ?>"
+              aria-pressed="<?= $isFav ? 'true' : 'false' ?>"
+              title="<?= $isFav ? 'お気に入り解除' : 'お気に入りに追加' ?>">
+              <i class="bi <?= $isFav ? 'bi-heart-fill' : 'bi-heart' ?>"></i>
+            </button>
+          <?php else: ?>
+            <a class="btn btn-sm btn-outline-danger" href="login-input.php" title="ログインしてお気に入りに追加">
+              <i class="bi bi-heart"></i>
+            </a>
+          <?php endif; ?>
+        </div>
+      </div>
+    </div>
+
+    <!-- レビュー表示 -->
+    <section class="mt-5">
+      <h2 class="h4">レビュー</h2>
+
+      <!-- ⭐ 平均評価（Bootstrapの黄色い星付き） -->
+      <p class="text-muted mb-3">
+        平均評価：
+        <?php if ($stat['avg_rating']): ?>
+          <?php
+          $avg = (float)$stat['avg_rating'];
+          $fullStars = floor($avg);
+          $halfStar = ($avg - $fullStars >= 0.5);
+          ?>
+          <span class="text-warning">
+            <?php for ($i = 0; $i < $fullStars; $i++): ?>
+              <i class="bi bi-star-fill"></i>
+            <?php endfor; ?>
+            <?php if ($halfStar): ?>
+              <i class="bi bi-star-half"></i>
+            <?php endif; ?>
+            <?php for ($i = $fullStars + ($halfStar ? 1 : 0); $i < 5; $i++): ?>
+              <i class="bi bi-star"></i>
+            <?php endfor; ?>
+          </span>
+          <?= htmlspecialchars($stat['avg_rating']) ?> / 5（<?= (int)$stat['cnt'] ?>件）
+        <?php else: ?>
+          —（0件）
+        <?php endif; ?>
+      </p>
+
+      <?php if ($eligible): ?>
+        <p>
+          <a class="btn btn-sm btn-primary" href="review-input.php?product_id=<?= $productId ?>">
+            レビューを書く / 編集する
+          </a>
+        </p>
+      <?php else: ?>
+        <p class="text-muted">※レビュー投稿は購入者のみ可能です。</p>
+      <?php endif; ?>
+
+      <?php if ($reviews): ?>
+        <ul class="list-unstyled vstack gap-3">
+          <?php foreach ($reviews as $r): ?>
+            <li class="border rounded p-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <strong><?= htmlspecialchars($r['name'], ENT_QUOTES, 'UTF-8') ?></strong>
+                <span class="text-warning">
+                  <?php for ($i = 0; $i < (int)$r['rating']; $i++): ?>
+                    <i class="bi bi-star-fill"></i>
+                  <?php endfor; ?>
+                  <?php for ($i = (int)$r['rating']; $i < 5; $i++): ?>
+                    <i class="bi bi-star"></i>
+                  <?php endfor; ?>
+                </span>
+              </div>
+              <div class="mt-2"><?= nl2br(htmlspecialchars($r['comment'], ENT_QUOTES, 'UTF-8')) ?></div>
+              <div class="text-end">
+                <small class="text-muted"><?= htmlspecialchars($r['created_at'], ENT_QUOTES, 'UTF-8') ?></small>
+              </div>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+      <?php else: ?>
+        <p>まだレビューはありません。</p>
+      <?php endif; ?>
+    </section>
+
+    <!-- トースト通知 -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1080;">
+      <div id="favToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body small" id="favToastMsg">更新しました</div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="閉じる"></button>
         </div>
       </div>
     </div>
   </div>
-  <?php
-    $stmt = $pdo->prepare("SELECT * FROM comment WHERE product_id = ? ORDER BY created_at DESC");
-    $stmt->execute([(int)$row['id']]);
-    $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  ?>
- <div class="comment-section">
-  <h3>💬 コメント（レビュー）</h3>
-    <?php if (!empty($comments)): ?>
-    <?php foreach ($comments as $c): ?>
-        <div class="comment-box">
-            <strong><?= htmlspecialchars($c['user']) ?></strong><br>
-            <p><?= nl2br(htmlspecialchars($c['comment'])) ?></p>
-            <small><?= $c['created_at'] ?></small>
-        </div>
-    <?php endforeach; ?>
-<?php else: ?>
-    <p class="no-comment">まだコメントがありません。最初のコメントを書いてみましょう 💬</p>
-<?php endif; ?>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (function() {
+      const LOGGED_IN = <?= $cid > 0 ? 'true' : 'false' ?>;
 
-    <div class="comment-form">
-        <form method="POST">
-            <input type="hidden" name="productid" value="<?= (int)$row['id'] ?>">
-            <input type="text" name="username" placeholder="お名前は入力してください" required>
-            <textarea name="content" rows="3" placeholder="コメントを入力してください" required></textarea>
-            <button type="submit" name="button">送信</button>
-        </form>
-    </div>
-  </div>
-<?php endforeach; ?>
-</div>
-<?php require 'footer.php'; ?>
+      async function postFav(url, productId) {
+        const body = new URLSearchParams();
+        body.append('product_id', String(productId));
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body
+        });
+        return res.ok;
+      }
+
+      function toggleBtn(btn, isFav) {
+        btn.dataset.fav = isFav ? '1' : '0';
+        btn.setAttribute('aria-pressed', isFav ? 'true' : 'false');
+        btn.classList.toggle('btn-danger', isFav);
+        btn.classList.toggle('btn-outline-danger', !isFav);
+        const icon = btn.querySelector('i');
+        if (icon) {
+          icon.classList.toggle('bi-heart-fill', isFav);
+          icon.classList.toggle('bi-heart', !isFav);
+        }
+        btn.title = isFav ? 'お気に入り解除' : 'お気に入りに追加';
+      }
+
+      function showToast(msg) {
+        const el = document.getElementById('favToast');
+        const msgEl = document.getElementById('favToastMsg');
+        if (!el || !window.bootstrap) return;
+        msgEl.textContent = msg;
+        const t = bootstrap.Toast.getOrCreateInstance(el, {
+          delay: 1600
+        });
+        t.show();
+      }
+
+      document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.fav-btn');
+        if (!btn) return;
+
+        if (!LOGGED_IN) {
+          window.location.href = 'login-input.php';
+          return;
+        }
+
+        const productId = btn.dataset.id;
+        const isFav = btn.dataset.fav === '1';
+        btn.disabled = true;
+        try {
+          const ok = await postFav(isFav ? 'favorite-delete.php' : 'favorite-insert.php', productId);
+          if (ok) {
+            toggleBtn(btn, !isFav);
+            showToast(!isFav ? 'お気に入りに追加しました' : 'お気に入りを解除しました');
+          }
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>

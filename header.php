@@ -1,17 +1,18 @@
 <?php
-// Hardened session (safe defaults). Adjust cookie params to your domain in production.
+
 if (session_status() === PHP_SESSION_NONE) {
-    session_set_cookie_params([
-        'httponly' => true,
-        'samesite' => 'Lax',
-        'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
-    ]);
-    session_start();
+  session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax',
+    'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+  ]);
+  session_start();
 }
 require_once __DIR__ . '/app.php';
 ?>
 <!doctype html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,11 +21,22 @@ require_once __DIR__ . '/app.php';
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    body { background: #f8fafc; }
-    .content-narrow { max-width: 960px; margin: 0 auto; }
-    .card-hover:hover { transform: translateY(-2px); transition: .15s ease; }
+    body {
+      background: #f8fafc;
+    }
+
+    .content-narrow {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-2px);
+      transition: .15s ease;
+    }
   </style>
 </head>
+
 <body>
   <?php require_once __DIR__ . '/menu.php'; ?>
   <?php foreach (flashes() as $f): ?>

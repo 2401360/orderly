@@ -1,6 +1,6 @@
 <footer class="mt-5 py-4 border-top">
     <div class="container d-flex flex-column flex-lg-row justify-content-between align-items-center gap-3">
-        <small class="text-muted mb-0">&copy; <?= date('Y') ?> Orderly Shop</small>
+        <small class="text-muted mb-0">&copy; <?= date('Y') ?> Orderly</small>
 
         <div class="d-flex align-items-center gap-3 flex-wrap">
             <a href="tel:+819012345678" class="text-decoration-none" aria-label="電話をかける">

@@ -1,6 +1,7 @@
 <?php
-// Navbar
+if (session_status() === PHP_SESSION_NONE) session_start();
 $me = $_SESSION['customer'] ?? null;
+$is_admin = isset($me['role']) && $me['role'] === 'admin';
 ?>
 <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
   <div class="container">
@@ -13,6 +14,9 @@ $me = $_SESSION['customer'] ?? null;
         <li class="nav-item"><a class="nav-link" href="product.php">商品</a></li>
         <li class="nav-item"><a class="nav-link" href="favorite-show.php">お気に入り</a></li>
         <li class="nav-item"><a class="nav-link" href="history.php">購入履歴</a></li>
+        <?php if ($is_admin): ?>
+          <li class="nav-item"><a class="nav-link" href="admin-products.php">管理者</a></li>
+        <?php endif; ?>
       </ul>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item me-2">
@@ -30,6 +34,12 @@ $me = $_SESSION['customer'] ?? null;
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" href="customer-input.php">プロフィール</a></li>
+              <?php if ($is_admin): ?>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="admin-products.php">管理者ページ</a></li>
+              <?php endif; ?>
               <li><a class="dropdown-item" href="logout-input.php">ログアウト</a></li>
             </ul>
           </li>

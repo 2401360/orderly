@@ -39,3 +39,42 @@ try {
     header('Location: cart-show.php');
     exit;
 }
+
+if (!empty($_SESSION['product']) && isset($_SESSION['customer'])) {
+    echo '<div class="customer-info">';
+    echo '<h1>注文者情報</h1>';
+    echo '<p><span>お名前：</span>', htmlspecialchars($_SESSION['customer']['name']), '</p>';
+    echo '<p><span>ご住所：</span>', htmlspecialchars($_SESSION['customer']['address']), '</p>';
+    echo '</div>';
+}
+?>
+<style>
+    .customer-info {
+        background: #f8f9fa;
+        /* màu nền nhẹ */
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .customer-info h1 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+        border-left: 4px solid #0d6efd;
+        padding-left: 10px;
+        margin-bottom: 15px;
+    }
+
+    .customer-info p {
+        margin-bottom: 8px;
+        font-size: 1rem;
+    }
+
+    .customer-info p span {
+        font-weight: bold;
+        color: #555;
+    }
+</style>
