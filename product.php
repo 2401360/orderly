@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require 'db-connect.php';
+require_once 'db-connect.php';;
 $page_title = '商品一覧';
 require 'header.php';
 

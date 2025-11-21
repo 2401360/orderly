@@ -123,7 +123,7 @@ if ($cid > 0) {
               <i class="bi <?= $isFav ? 'bi-heart-fill' : 'bi-heart' ?>"></i>
             </button>
           <?php else: ?>
-            <a class="btn btn-sm btn-outline-danger" href="login-input.php" title="ログインしてお気に入りに追加">
+            <a class="btn btn-outline-danger" href="login-input.php" title="ログインしてお気に入りに追加">
               <i class="bi bi-heart"></i>
             </a>
           <?php endif; ?>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db-connect.php';
+require_once 'db-connect.php';;
 require 'header.php';
 
 function post($key)
@@ -19,7 +19,7 @@ try {
     $login    = post('login');
     $password = post('password');
 
-    
+
     $errors = [];
     if ($name === '')     $errors[] = '名前を入力してください。';
     if ($address === '')  $errors[] = '住所を入力してください。';
@@ -34,7 +34,7 @@ try {
         exit;
     }
 
-    
+
     if (isset($_SESSION['customer'])) {
         $id  = (int)$_SESSION['customer']['id'];
         $chk = $pdo->prepare('SELECT id FROM customer WHERE id != ? AND login = ? LIMIT 1');
@@ -49,16 +49,16 @@ try {
         exit;
     }
 
-    
+
     $hash = password_hash($password, PASSWORD_DEFAULT);
 
     if (isset($_SESSION['customer'])) {
-        
+
         $id  = (int)$_SESSION['customer']['id'];
         $upd = $pdo->prepare('UPDATE customer SET name=?, address=?, login=?, password=? WHERE id=?');
         $upd->execute([$name, $address, $login, $hash, $id]);
 
-        
+
         $_SESSION['customer'] = [
             'id'      => $id,
             'name'    => $name,
@@ -67,11 +67,11 @@ try {
         ];
         echo '<div class="container pt-3"><div class="alert alert-success">お客様情報を更新しました。</div></div>';
     } else {
-        
+
         $ins = $pdo->prepare('INSERT INTO customer (name, address, login, password) VALUES (?, ?, ?, ?)');
         $ins->execute([$name, $address, $login, $hash]);
 
-        
+
         $newId = (int)$pdo->lastInsertId();
         $_SESSION['customer'] = [
             'id'      => $newId,
@@ -84,7 +84,7 @@ try {
 
     echo '<div class="container pb-3"><a class="btn btn-primary" href="index.php">トップへ</a></div>';
 } catch (Throwable $e) {
-    
+
     echo '<div class="container pt-3"><div class="alert alert-danger">登録処理でエラーが発生しました。</div></div>';
 }
 require 'footer.php';
