@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require 'db-connect.php';
+require_once 'db-connect.php';;
 require 'header.php';
 
 $is_admin = (isset($_SESSION['customer']['role']) && $_SESSION['customer']['role'] === 'admin');
@@ -10,7 +10,11 @@ if (!$is_admin) {
     exit;
 }
 
-$pdo = new PDO($connect, USER, PASS);
+$pdo = new PDO($connect, USER, PASS, [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES => false,
+]);
 
 if (!function_exists('e')) {
     function e($s)
@@ -19,12 +23,18 @@ if (!function_exists('e')) {
     }
 }
 
-const UPLOAD_REL = 'uploads';
-$uploadDir = __DIR__ . '/' . UPLOAD_REL;
+/* ====== 画像アップロード設定 ====== */
+const UPLOAD_REL = 'uploads';                  // 公開相対パス
+$uploadDir = __DIR__ . '/' . UPLOAD_REL;       // 物理パス
 if (!is_dir($uploadDir)) {
     @mkdir($uploadDir, 0755, true);
 }
 
+/**
+ * 画像アップロード処理
+ * 成功: "uploads/xxx.ext"（相対パス）を返す
+ * 未選択/失敗: 空文字を返す（エラー文言は $errors にpush）
+ */
 function handle_image_upload(array &$errors): string
 {
     if (empty($_FILES['image_file']) || $_FILES['image_file']['error'] === UPLOAD_ERR_NO_FILE) return '';
@@ -67,16 +77,19 @@ function handle_image_upload(array &$errors): string
     return $destRel;
 }
 
+/* ====== 入出力 ====== */
 $notice = '';
 $errors = [];
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 $id = isset($_POST['id']) ? (int)$_POST['id'] : (isset($_GET['id']) ? (int)$_GET['id'] : 0);
 
+/* ====== POST処理 ====== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $id     = (int)($_POST['id'] ?? 0);
 
     if ($action === 'delete' && $id > 0) {
+        // 削除はバリデーション不要
         $stmt = $pdo->prepare('DELETE FROM product WHERE id=?');
         $stmt->execute([$id]);
         $notice = '商品を削除しました。';
@@ -91,14 +104,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($category === '')  $errors[] = 'カテゴリは必須です。';
         if ($price <= 0)       $errors[] = '価格は1以上を入力してください。';
 
+        // 画像アップロード（選択されていれば優先）
         $uploadedPath = handle_image_upload($errors);
 
         if ($action === 'create' && !$errors) {
-            $image_url = $uploadedPath;
+            $image_url = $uploadedPath; // 新規はアップロードのみ（未選択なら空）
             $stmt = $pdo->prepare('INSERT INTO product (name, category, price, image_url, description, is_recommended) VALUES (?, ?, ?, ?, ?, ?)');
             $stmt->execute([$name, $category, $price, $image_url, $description, $is_recommended]);
             $notice = '商品を追加しました。';
         } elseif ($action === 'update' && !$errors) {
+            // 編集は、新規アップロードが無ければ既存のパスを維持
             $image_url = $uploadedPath !== '' ? $uploadedPath : (string)($_POST['current_image_url'] ?? '');
             $stmt = $pdo->prepare('UPDATE product SET name=?, category=?, price=?, image_url=?, description=?, is_recommended=? WHERE id=?');
             $stmt->execute([$name, $category, $price, $image_url, $description, $is_recommended, $id]);
@@ -107,6 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+/* ====== 編集対象の取得 ====== */
 $edit_item = null;
 if ($action === 'edit' && $id > 0) {
     $stmt = $pdo->prepare('SELECT * FROM product WHERE id=? LIMIT 1');
@@ -114,6 +130,7 @@ if ($action === 'edit' && $id > 0) {
     $edit_item = $stmt->fetch();
 }
 
+/* ====== 一覧取得 ====== */
 $products = $pdo->query('SELECT * FROM product ORDER BY id DESC')->fetchAll();
 ?>
 <div class="container py-4">
@@ -222,12 +239,14 @@ $products = $pdo->query('SELECT * FROM product ORDER BY id DESC')->fetchAll();
         </div>
     <?php endif; ?>
 
+    <!-- 一覧（ID列は非表示） -->
     <div class="card">
         <div class="card-header">商品一覧</div>
         <div class="card-body table-responsive">
             <table class="table table-sm align-middle">
                 <thead>
                     <tr>
+                        <!-- <th>ID</th> -->
                         <th>商品名</th>
                         <th>カテゴリ</th>
                         <th>価格</th>
@@ -240,6 +259,7 @@ $products = $pdo->query('SELECT * FROM product ORDER BY id DESC')->fetchAll();
                 <tbody>
                     <?php foreach ($products as $p): ?>
                         <tr>
+                            <!-- <td><?= e($p['id']) ?></td> -->
                             <td><?= e($p['name']) ?></td>
                             <td><?= e($p['category'] ?? '') ?></td>
                             <td><?= e($p['price']) ?></td>

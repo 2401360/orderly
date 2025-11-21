@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db-connect.php';
+require_once 'db-connect.php';;
 require 'header.php';
 
 unset($_SESSION['customer']);
