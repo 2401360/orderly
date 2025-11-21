@@ -1,9 +1,9 @@
 <?php
 
-const SERVER = "mysql326.phy.lolipop.lan";
-const DBNAME = "LAA1607565-shop";
-const USER = "LAA1607565";
-const PASS = "12345";
+const SERVER = ""; // 自分のサーバーに変更
+const DBNAME = ""; // 自分のデータベース名に変更
+const USER = ""; // 自分のユーザー名に変更
+const PASS = "";  // 自分のパスワードに変更
 
 
 $connect = 'mysql:host=' . SERVER . ';dbname=' . DBNAME . ';charset=utf8mb4';
