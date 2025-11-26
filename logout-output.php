@@ -4,16 +4,16 @@ session_start();
 $_SESSION = [];
 
 if (ini_get('session.use_cookies')) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+  $params = session_get_cookie_params();
+  setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
 }
 
 session_destroy();
 $page_title = 'Logged out';
-require 'header.php';
+require_once 'header.php';
 ?>
 <div class="container py-4 content-narrow">
   <div class="alert alert-info">ログアウトしました。</div>
   <a class="btn btn-primary" href="index.php">トップへ</a>
 </div>
-<?php require 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>

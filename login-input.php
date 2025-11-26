@@ -1,4 +1,5 @@
-<?php $page_title='Login'; require 'header.php'; ?>
+<?php $page_title = 'Login';
+require_once 'header.php'; ?>
 <div class="container py-4 content-narrow">
   <div class="card shadow-sm">
     <div class="card-body">
@@ -6,15 +7,15 @@
       <form action="login-output.php" method="post" class="vstack gap-3">
         <div>
           <label class="form-label">ログイン名</label>
-          <input type="text" name="login" class="form-control" required>
+          <input type="text" name="login" class="form-control" require_onced>
         </div>
         <div>
           <label class="form-label">パスワード</label>
-          <input type="password" name="password" class="form-control" required>
+          <input type="password" name="password" class="form-control" require_onced>
         </div>
         <button class="btn btn-primary w-100">ログイン</button>
       </form>
     </div>
   </div>
 </div>
-<?php require 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>

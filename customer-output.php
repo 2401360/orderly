@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'db-connect.php';;
-require 'header.php';
+require_once 'app.php';
+require_once 'header.php';
 
 function post($key)
 {
@@ -9,10 +9,7 @@ function post($key)
 }
 
 try {
-    $pdo = new PDO($connect, USER, PASS, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
+    $pdo = db();
 
     $name     = post('name');
     $address  = post('address');
@@ -30,7 +27,7 @@ try {
         echo '<div class="container pt-3"><div class="alert alert-danger"><ul class="mb-0">';
         foreach ($errors as $e) echo '<li>' . htmlspecialchars($e) . '</li>';
         echo '</ul></div></div>';
-        require 'footer.php';
+        require_once 'footer.php';
         exit;
     }
 
@@ -45,7 +42,7 @@ try {
     }
     if ($chk->fetch()) {
         echo '<div class="container pt-3"><div class="alert alert-danger">ログイン名がすでに使用されています。変更してください。</div></div>';
-        require 'footer.php';
+        require_once 'footer.php';
         exit;
     }
 
@@ -87,4 +84,4 @@ try {
 
     echo '<div class="container pt-3"><div class="alert alert-danger">登録処理でエラーが発生しました。</div></div>';
 }
-require 'footer.php';
+require_once 'footer.php';

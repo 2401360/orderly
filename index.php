@@ -1,15 +1,11 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require 'db-connect.php';
+require_once 'app.php';
 $page_title = 'ホーム';
-require 'header.php';
+require_once 'header.php';
 
 $cid = $_SESSION['customer']['id'] ?? 0;
-$pdo = new PDO(
-    $connect,
-    USER,
-    PASS
-);
+$pdo = db();
 
 $sqlReco = "
 SELECT p.*,
@@ -163,4 +159,4 @@ function card_item(array $p, int $cid): string
     </div>
 </div>
 
-<?php require 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>

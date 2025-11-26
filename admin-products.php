@@ -1,7 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require_once 'db-connect.php';;
-require 'header.php';
+require_once 'app.php';
+require_once 'header.php';
 
 $is_admin = (isset($_SESSION['customer']['role']) && $_SESSION['customer']['role'] === 'admin');
 if (!$is_admin) {
@@ -10,11 +10,7 @@ if (!$is_admin) {
     exit;
 }
 
-$pdo = new PDO($connect, USER, PASS, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES => false,
-]);
+$pdo = db();
 
 if (!function_exists('e')) {
     function e($s)
