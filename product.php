@@ -1,8 +1,8 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require 'db-connect.php';
+require_once 'app.php';
 $page_title = '商品一覧';
-require 'header.php';
+require_once 'header.php';
 
 if (!function_exists('e')) {
   function e($s)
@@ -15,7 +15,7 @@ $q   = trim($_GET['q']   ?? '');
 $cat = trim($_GET['cat'] ?? 'all');
 $cid = isset($_SESSION['customer']['id']) ? (int)$_SESSION['customer']['id'] : 0;
 
-$pdo = new PDO($connect, USER, PASS);
+$pdo = db();
 
 $categories = $pdo->query("SELECT DISTINCT category FROM product ORDER BY category")->fetchAll(PDO::FETCH_COLUMN);
 
@@ -43,43 +43,64 @@ if ($cat !== '' && $cat !== 'all') {
   $params[':cat'] = $cat;
 }
 
-$page = max(1, intval($_GET['page'] ?? 1));
-$per_page = 16; // 4 cakes × 4 tiers
-$offset = ($page - 1) * $per_page;
-
-$count_sql = "SELECT COUNT(*) FROM product p " . ($conds ? "WHERE ".implode(" AND ", $conds) : "");
-$count_stmt = $pdo->prepare($count_sql);
-foreach ($params as $k => $v)
-    $count_stmt->bindValue($k, $v, is_int($v) ? PDO::PARAM_INT : PDO::PARAM_STR);
-$count_stmt->execute();
-$total_rows = $count_stmt->fetchColumn();
-$total_pages = ceil($total_rows / $per_page);
-
-$sql .= " LIMIT :limit OFFSET :offset";
+$sql = $base . ($conds ? " WHERE " . implode(" AND ", $conds) : "") . " ORDER BY p.created_at DESC, p.id DESC";
 $stmt = $pdo->prepare($sql);
-
-foreach ($params as $k => $v)
-    $stmt->bindValue($k, $v, is_int($v) ? PDO::PARAM_INT : PDO::PARAM_STR);
-
-$stmt->bindValue(':limit',  $per_page, PDO::PARAM_INT);
-$stmt->bindValue(':offset', $offset,   PDO::PARAM_INT);
+foreach ($params as $k => $v) $stmt->bindValue($k, is_int($v) ? $v : $v, is_int($v) ? PDO::PARAM_INT : PDO::PARAM_STR);
 $stmt->execute();
 $rows = $stmt->fetchAll();
 
-
 $group_mode = ($cat === 'all');
-
 if ($group_mode) {
-    $groups = [];
-    foreach ($rows as $p) {
-        $key = $p['category'] ?: 'その他';
-        $groups[$key][] = $p;
-    }
-    ksort($groups, SORT_NATURAL);
+  $groups = [];
+  foreach ($rows as $p) {
+    $key = $p['category'] ?? 'その他';
+    $groups[$key][] = $p;
+  }
+  ksort($groups, SORT_NATURAL | SORT_FLAG_CASE);
 }
 
+function card_item(array $p, int $cid): string
+{
+  $img = !empty($p['image_url'])
+    ? '<img src="' . e($p['image_url']) . '" class="card-img-top img-fluid rounded-top-3" alt="' . e($p['name']) . '">'
+    : '';
+  $cat = !empty($p['category'])
+    ? '<span class="badge bg-secondary-subtle text-secondary-emphasis mb-2">' . e($p['category']) . '</span>'
+    : '';
+  $desc = e(mb_strimwidth((string)($p['description'] ?? ''), 0, 80, '…', 'UTF-8'));
+  $detail = '<a class="btn btn-sm btn-outline-secondary" href="detail.php?id=' . (int)$p['id'] . '"><i class="bi bi-info-circle"></i> 詳細</a>';
 
+  if ($cid > 0) {
+    $favBtn = '<button type="button"
+                      class="btn btn-sm ' . (!empty($p['is_fav']) ? 'btn-danger' : 'btn-outline-danger') . ' fav-btn"
+                      data-id="' . (int)$p['id'] . '"
+                      data-fav="' . (!empty($p['is_fav']) ? '1' : '0') . '"
+                      aria-pressed="' . (!empty($p['is_fav']) ? 'true' : 'false') . '"
+                      title="' . (!empty($p['is_fav']) ? 'お気に入り解除' : 'お気に入りに追加') . '">
+                  <i class="bi ' . (!empty($p['is_fav']) ? 'bi-heart-fill' : 'bi-heart') . '"></i>
+                </button>';
+  } else {
+    $favBtn = '<a class="btn btn-sm btn-outline-danger" href="login-input.php" title="ログインしてお気に入りに追加"><i class="bi bi-heart"></i></a>';
+  }
 
+  return '
+  <div class="col">
+    <div class="card shadow-sm rounded-3 h-100">
+      ' . $img . '
+      <div class="card-body d-flex flex-column">
+        <div class="d-flex align-items-start justify-content-between mb-1">
+          <h3 class="h6 card-title mb-0">' . e($p['name']) . '</h3>
+          <span class="fw-semibold">¥' . number_format((int)$p['price']) . '</span>
+        </div>
+        ' . $cat . '
+        <p class="text-body-secondary small mb-3 text-truncate">' . $desc . '</p>
+        <div class="mt-auto d-flex justify-content-between align-items-center">
+          ' . $detail . $favBtn . '
+        </div>
+      </div>
+    </div>
+  </div>';
+}
 ?>
 <div class="container py-4">
   <h1 class="h4 mb-1">商品一覧</h1>
@@ -103,77 +124,25 @@ if ($group_mode) {
   </form>
 
   <?php if (!$rows): ?>
-  <div class="alert alert-info">該当する商品がありません。</div>
-
-<?php else: ?>
-
-  <?php if ($group_mode): ?>
-
-    <?php foreach ($groups as $catName => $list): ?>
-      <h2 class="showcase-category-title"><?= e($catName) ?></h2>
-
-      <?php
-        $tiers = array_chunk($list, 4);
-        foreach ($tiers as $tier):
-      ?>
-        <div class="showcase-tier">
-          <?php foreach ($tier as $p): ?>
-            <div class="cake-item">
-              <div class="name-plate">
-                <img src="image/name_tag.png" class="name-plate-img">
-                <p><?= e($p['name']) ?></p>
-              </div>
-
-              <a href="detail.php?id=<?= (int)$p['id'] ?>">
-                <img src="<?= e($p['image_url']) ?>" class="cake-img" alt="">
-              </a>
-            </div>
-          <?php endforeach; ?>
-        </div>
-      <?php endforeach; ?>
-
-    <?php endforeach; ?>
-
+    <div class="alert alert-info">該当する商品がありません。</div>
   <?php else: ?>
-    <?php
-      $tiers = array_chunk($rows, 4);
-      foreach ($tiers as $tier):
-    ?>
-      <div class="showcase-tier">
-        <?php foreach ($tier as $p): ?>
-          <div class="cake-item">
-            <div class="name-plate">
-              <img src="image/name_tag.png" class="name-plate-img">
-              <p><?= e($p['name']) ?></p>
-            </div>
-            <a href="detail.php?id=<?= (int)$p['id'] ?>">
-              <img src="<?= e($p['image_url']) ?>" class="cake-img">
-            </a>
+    <?php if ($group_mode): ?>
+      <?php foreach ($groups as $catName => $list): ?>
+        <section class="mb-4">
+          <h2 class="h5 mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-folder2-open text-primary"></i> <?= e($catName) ?>
+          </h2>
+          <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+            <?php foreach ($list as $p) echo card_item($p, $cid); ?>
           </div>
-        <?php endforeach; ?>
+        </section>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+        <?php foreach ($rows as $p) echo card_item($p, $cid); ?>
       </div>
-    <?php endforeach; ?>
+    <?php endif; ?>
   <?php endif; ?>
-
-<?php endif; ?>
-<div class="d-flex justify-content-center my-4 gap-3">
-
-  <?php if ($page > 1): ?>
-    <a class="btn btn-outline-primary"
-       href="?page=<?= $page-1 ?>&q=<?= e($q) ?>&cat=<?= e($cat) ?>">
-      前へ
-    </a>
-  <?php endif; ?>
-
-  <?php if ($page < $total_pages): ?>
-    <a class="btn btn-outline-primary"
-       href="?page=<?= $page+1 ?>&q=<?= e($q) ?>&cat=<?= e($cat) ?>">
-      次へ
-    </a>
-  <?php endif; ?>
-
-</div>
-
 </div>
 
 <?php if ($cid === 0): ?>
@@ -271,4 +240,4 @@ if ($group_mode) {
   })();
 </script>
 
-<?php require 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>

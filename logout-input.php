@@ -1,4 +1,5 @@
-<?php $page_title='Logout'; require 'header.php'; ?>
+<?php $page_title = 'Logout';
+require_once 'header.php'; ?>
 <div class="container py-4 content-narrow">
   <div class="card shadow-sm">
     <div class="card-body">
@@ -8,4 +9,4 @@
     </div>
   </div>
 </div>
-<?php require 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>

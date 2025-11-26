@@ -1,3 +1,4 @@
-<?php $page_title='Cart'; require 'header.php'; ?>
-<?php require 'cart.php'; ?>
-<?php require 'footer.php'; ?>
+<?php $page_title = 'Cart';
+require_once 'header.php'; ?>
+<?php require_once 'cart.php'; ?>
+<?php require_once 'footer.php'; ?>
