@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require_once 'db-connect.php';
+require_once 'app.php';
 
 echo '<div class="container py-4">';
 
@@ -10,10 +10,7 @@ if (!isset($_SESSION['customer'])) {
   return;
 }
 
-$pdo = new PDO($connect, USER, PASS, [
-  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-]);
+$pdo = db();
 
 $sql = $pdo->prepare(
   'SELECT p.id, p.name, p.price
