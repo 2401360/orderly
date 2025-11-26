@@ -7,35 +7,61 @@ require_once 'header.php';
 $cid = $_SESSION['customer']['id'] ?? 0;
 $pdo = db();
 
+/* -------------------------
+   おすすめ商品(recommended)
+------------------------- */
+
 $sqlReco = "
 SELECT p.*,
-       CASE WHEN :cid > 0 AND EXISTS(SELECT 1 FROM favorite f WHERE f.customer_id = :cid AND f.product_id = p.id)
+       CASE WHEN :cid1 > 0 AND 
+                 EXISTS(SELECT 1 FROM favorite f 
+                        WHERE f.customer_id = :cid2 AND f.product_id = p.id)
             THEN 1 ELSE 0 END AS is_fav
   FROM product p
  WHERE COALESCE(p.is_recommended,0)=1
  ORDER BY p.id DESC
  LIMIT 4";
+
 $stReco = $pdo->prepare($sqlReco);
-$stReco->bindValue(':cid', $cid, PDO::PARAM_INT);
+$stReco->bindValue(':cid1', $cid, PDO::PARAM_INT);
+$stReco->bindValue(':cid2', $cid, PDO::PARAM_INT);
 $stReco->execute();
 $recommended = $stReco->fetchAll();
 
+/* -------------------------
+   新着商品(new items)
+------------------------- */
+
 $sqlNew = "
 SELECT p.*,
-       CASE WHEN :cid > 0 AND EXISTS(SELECT 1 FROM favorite f WHERE f.customer_id = :cid AND f.product_id = p.id)
+       CASE WHEN :cid1 > 0 AND 
+                 EXISTS(SELECT 1 FROM favorite f 
+                        WHERE f.customer_id = :cid2 AND f.product_id = p.id)
             THEN 1 ELSE 0 END AS is_fav
   FROM product p
  ORDER BY p.id DESC
  LIMIT 8";
+
 $stNew = $pdo->prepare($sqlNew);
-$stNew->bindValue(':cid', $cid, PDO::PARAM_INT);
+$stNew->bindValue(':cid1', $cid, PDO::PARAM_INT);
+$stNew->bindValue(':cid2', $cid, PDO::PARAM_INT);
 $stNew->execute();
 $newItems = $stNew->fetchAll();
 
+/* -------------------------
+   カード表示関数
+------------------------- */
+
 function card_item(array $p, int $cid): string
 {
-    $img = $p['image_url'] ? '<img src="' . e($p['image_url']) . '" class="card-img-top rounded-top-3" alt="' . e($p['name']) . '">' : '';
-    $cat = $p['category'] ? '<span class="badge bg-secondary-subtle text-secondary-emphasis">' . e($p['category']) . '</span>' : '';
+    $img = $p['image_url']
+        ? '<img src="' . e($p['image_url']) . '" class="card-img-top rounded-top-3" alt="' . e($p['name']) . '">'
+        : '';
+
+    $cat = $p['category']
+        ? '<span class="badge bg-secondary-subtle text-secondary-emphasis">' . e($p['category']) . '</span>'
+        : '';
+
     $desc = e(mb_strimwidth($p['description'] ?? '', 0, 80, '…', 'UTF-8'));
 
     $detailBtn = '<a class="btn btn-sm btn-outline-secondary" href="detail.php?id=' . (int)$p['id'] . '">
@@ -77,10 +103,15 @@ function card_item(array $p, int $cid): string
 }
 ?>
 
+<!-- ============================
+         ここからHTML部分
+============================= -->
+
 <div class="container py-4">
     <div class="bg-body-tertiary rounded-4 shadow-sm p-4 p-md-5 mb-4 text-center">
         <h1 class="display-6 fw-semibold mb-2">ようこそ Orderly へ</h1>
         <p class="lead mb-4">ヘルシーで美味しいケーキを、あなたのお気に入りから簡単に注文できます。</p>
+
         <div class="row justify-content-center mb-4">
             <div class="col-12 col-md-8">
                 <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm">
@@ -90,11 +121,12 @@ function card_item(array $p, int $cid): string
                 </div>
             </div>
         </div>
+
         <a class="btn btn-primary btn-lg" href="product.php"><i class="bi bi-bag"></i> 商品を見る</a>
     </div>
 
+    <!-- おすすめ -->
     <?php if ($recommended): ?>
-
         <div class="d-flex align-items-center gap-2 mb-3">
             <i class="bi bi-hand-thumbs-up text-danger"></i>
             <h2 class="h5 m-0">おすすめ</h2>
@@ -142,18 +174,20 @@ function card_item(array $p, int $cid): string
             <button class="carousel-control-prev" type="button" data-bs-target="#recoCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
             </button>
+
             <button class="carousel-control-next" type="button" data-bs-target="#recoCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon"></span>
             </button>
 
         </div>
-
     <?php endif; ?>
 
+    <!-- 新着 -->
     <div class="d-flex align-items-center gap-2 mb-2">
         <i class="bi bi-stars text-warning"></i>
         <h2 class="h5 m-0">新着</h2>
     </div>
+
     <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
         <?php foreach ($newItems as $p) echo card_item($p, $cid); ?>
     </div>
