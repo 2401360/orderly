@@ -18,7 +18,7 @@ if ($productId <= 0 || $rating < 1 || $rating > 5) {
 }
 
 try {
-    $pdo = new PDO('mysql:host='.SERVER.';dbname='.DBNAME.';charset=utf8mb4', USER, PASS, [
+    $pdo = new PDO('mysql:host=' . SERVER . ';dbname=' . DBNAME . ';charset=utf8mb4', USER, PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
 } catch (PDOException $e) {

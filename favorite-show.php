@@ -1,4 +1,4 @@
 <?php $page_title = 'Favorites';
-require 'header.php'; ?>
-<?php require 'favorite.php'; ?>
-<?php require 'footer.php'; ?>
+require_once 'header.php'; ?>
+<?php require_once 'favorite.php'; ?>
+<?php require_once 'footer.php'; ?>

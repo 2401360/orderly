@@ -3,20 +3,18 @@ session_start();
 require_once __DIR__ . '/db-connect.php';
 
 if (empty($_SESSION['customer'])) {
-    header('Location: login-input.php');
-    exit;
+  header('Location: login-input.php');
+  exit;
 }
 $customerId = (int)$_SESSION['customer']['id'];
 $productId  = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
 
 try {
-    $pdo = new PDO('mysql:host='.SERVER.';dbname='.DBNAME.';charset=utf8mb4', USER, PASS, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    ]);
+  $pdo = db();
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo 'DB接続に失敗しました。';
-    exit;
+  http_response_code(500);
+  echo 'DB接続に失敗しました。';
+  exit;
 }
 
 
@@ -31,9 +29,9 @@ $st->execute([$customerId, $productId]);
 $eligible = (bool)$st->fetchColumn();
 
 if (!$eligible) {
-    http_response_code(403);
-    echo 'この商品は未購入のため、レビューできません。';
-    exit;
+  http_response_code(403);
+  echo 'この商品は未購入のため、レビューできません。';
+  exit;
 }
 
 
@@ -49,12 +47,14 @@ $product = $st->fetch(PDO::FETCH_ASSOC);
 ?>
 <!doctype html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>レビューを書く</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body class="container py-4">
   <h1 class="mb-3">レビューを書く：<?= htmlspecialchars($product['name'] ?? '商品', ENT_QUOTES, 'UTF-8') ?></h1>
 
@@ -63,9 +63,9 @@ $product = $st->fetch(PDO::FETCH_ASSOC);
 
     <div>
       <label class="form-label">評価（1〜5）</label>
-      <select name="rating" class="form-select" required>
-        <?php for ($i=1; $i<=5; $i++): ?>
-          <option value="<?= $i ?>" <?= (isset($myReview['rating']) && (int)$myReview['rating']===$i)?'selected':''; ?>>
+      <select name="rating" class="form-select" require_onced>
+        <?php for ($i = 1; $i <= 5; $i++): ?>
+          <option value="<?= $i ?>" <?= (isset($myReview['rating']) && (int)$myReview['rating'] === $i) ? 'selected' : ''; ?>>
             <?= $i ?>
           </option>
         <?php endfor; ?>
@@ -83,4 +83,5 @@ $product = $st->fetch(PDO::FETCH_ASSOC);
     </div>
   </form>
 </body>
+
 </html>

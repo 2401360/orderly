@@ -1,14 +1,11 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require 'header.php';
-require_once __DIR__ . '/db-connect.php';
+require_once 'header.php';
+require_once 'app.php';
 
 $productId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-$pdo = new PDO($connect, USER, PASS, [
-  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
+$pdo = db();
 
 $cid = !empty($_SESSION['customer']['id']) ? (int)$_SESSION['customer']['id'] : 0;
 $isFav = false;

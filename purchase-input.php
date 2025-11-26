@@ -1,5 +1,5 @@
 <?php $page_title = 'Confirm Purchase';
-require 'header.php'; ?>
+require_once 'header.php'; ?>
 <style>
   .customer-info {
     background: #f8f9fa;
@@ -34,12 +34,12 @@ require 'header.php'; ?>
   <?php
   if (!isset($_SESSION['customer'])) {
     echo '<div class="alert alert-warning">購入手続きを行うにはログインしてください。</div>';
-    require 'footer.php';
+    require_once 'footer.php';
     exit;
   }
   if (empty($_SESSION['product'])) {
     echo '<div class="alert alert-info">カートが空です。</div>';
-    require 'footer.php';
+    require_once 'footer.php';
     exit;
   }
   if (!empty($_SESSION['product']) && isset($_SESSION['customer'])) {
@@ -65,4 +65,4 @@ require 'header.php'; ?>
     </div>
   </div>
 </div>
-<?php require 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>

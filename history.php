@@ -1,20 +1,20 @@
 <?php $page_title = 'Purchase History';
-require 'header.php'; ?>
-<?php require_once 'db-connect.php'; ?>
+require_once 'header.php'; ?>
+<?php require_once 'app.php'; ?>
 <div class="container py-4">
   <?php
   if (!isset($_SESSION['customer'])) {
     echo '<div class="alert alert-warning">購入履歴を表示するには、ログインしてください。</div>';
-    require 'footer.php';
+    require_once 'footer.php';
     exit;
   }
-  $pdo = new PDO($connect, USER, PASS);
+  $pdo = db();
   $sql = $pdo->prepare('select id from purchase where customer_id=? order by id desc');
   $sql->execute([$_SESSION['customer']['id']]);
   $purchases = $sql->fetchAll(PDO::FETCH_COLUMN);
   if (empty($purchases)) {
     echo '<div class="alert alert-info">購入履歴はありません。</div>';
-    require 'footer.php';
+    require_once 'footer.php';
     exit;
   }
   foreach ($purchases as $pid):
@@ -69,4 +69,4 @@ require 'header.php'; ?>
     </div>
   <?php endforeach; ?>
 </div>
-<?php require 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>
