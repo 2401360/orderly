@@ -1,7 +1,7 @@
 <?php
 session_start();
-require 'db-connect.php';
-require 'header.php';
+require_once 'app.php';
+require_once 'header.php';
 
 function post($key)
 {
@@ -9,17 +9,14 @@ function post($key)
 }
 
 try {
-    $pdo = new PDO($connect, USER, PASS, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
+    $pdo = db();
 
     $name     = post('name');
     $address  = post('address');
     $login    = post('login');
     $password = post('password');
 
-    
+
     $errors = [];
     if ($name === '')     $errors[] = '名前を入力してください。';
     if ($address === '')  $errors[] = '住所を入力してください。';
@@ -30,11 +27,11 @@ try {
         echo '<div class="container pt-3"><div class="alert alert-danger"><ul class="mb-0">';
         foreach ($errors as $e) echo '<li>' . htmlspecialchars($e) . '</li>';
         echo '</ul></div></div>';
-        require 'footer.php';
+        require_once 'footer.php';
         exit;
     }
 
-    
+
     if (isset($_SESSION['customer'])) {
         $id  = (int)$_SESSION['customer']['id'];
         $chk = $pdo->prepare('SELECT id FROM customer WHERE id != ? AND login = ? LIMIT 1');
@@ -45,20 +42,20 @@ try {
     }
     if ($chk->fetch()) {
         echo '<div class="container pt-3"><div class="alert alert-danger">ログイン名がすでに使用されています。変更してください。</div></div>';
-        require 'footer.php';
+        require_once 'footer.php';
         exit;
     }
 
-    
+
     $hash = password_hash($password, PASSWORD_DEFAULT);
 
     if (isset($_SESSION['customer'])) {
-        
+
         $id  = (int)$_SESSION['customer']['id'];
         $upd = $pdo->prepare('UPDATE customer SET name=?, address=?, login=?, password=? WHERE id=?');
         $upd->execute([$name, $address, $login, $hash, $id]);
 
-        
+
         $_SESSION['customer'] = [
             'id'      => $id,
             'name'    => $name,
@@ -67,11 +64,11 @@ try {
         ];
         echo '<div class="container pt-3"><div class="alert alert-success">お客様情報を更新しました。</div></div>';
     } else {
-        
+
         $ins = $pdo->prepare('INSERT INTO customer (name, address, login, password) VALUES (?, ?, ?, ?)');
         $ins->execute([$name, $address, $login, $hash]);
 
-        
+
         $newId = (int)$pdo->lastInsertId();
         $_SESSION['customer'] = [
             'id'      => $newId,
@@ -84,7 +81,7 @@ try {
 
     echo '<div class="container pb-3"><a class="btn btn-primary" href="index.php">トップへ</a></div>';
 } catch (Throwable $e) {
-    
+
     echo '<div class="container pt-3"><div class="alert alert-danger">登録処理でエラーが発生しました。</div></div>';
 }
-require 'footer.php';
+require_once 'footer.php';

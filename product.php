@@ -1,8 +1,8 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require 'db-connect.php';
+require_once 'app.php';
 $page_title = '商品一覧';
-require 'header.php';
+require_once 'header.php';
 
 if (!function_exists('e')) {
   function e($s)
@@ -15,7 +15,7 @@ $q   = trim($_GET['q']   ?? '');
 $cat = trim($_GET['cat'] ?? 'all');
 $cid = isset($_SESSION['customer']['id']) ? (int)$_SESSION['customer']['id'] : 0;
 
-$pdo = new PDO($connect, USER, PASS);
+$pdo = db();
 
 $categories = $pdo->query("SELECT DISTINCT category FROM product ORDER BY category")->fetchAll(PDO::FETCH_COLUMN);
 
@@ -240,4 +240,4 @@ function card_item(array $p, int $cid): string
   })();
 </script>
 
-<?php require 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>

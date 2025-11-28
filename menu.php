@@ -38,7 +38,6 @@ $is_admin = isset($me['role']) && $me['role'] === 'admin';
                 <li>
                   <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item" href="admin-products.php">管理者ページ</a></li>
               <?php endif; ?>
               <li><a class="dropdown-item" href="logout-input.php">ログアウト</a></li>
             </ul>

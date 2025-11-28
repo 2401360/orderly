@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
   ]);
   session_start();
 }
-require_once __DIR__ . '/app.php';
+require_once 'app.php';
 ?>
 <!doctype html>
 <html lang="ja">
@@ -38,7 +38,7 @@ require_once __DIR__ . '/app.php';
 </head>
 
 <body>
-  <?php require_once __DIR__ . '/menu.php'; ?>
+  <?php require_once 'menu.php'; ?>
   <?php foreach (flashes() as $f): ?>
     <div class="container pt-3">
       <div class="alert alert-<?= e($f['t']) ?>"><?= e($f['m']) ?></div>
