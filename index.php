@@ -22,7 +22,6 @@ SELECT p.*,
  WHERE COALESCE(p.is_recommended,0)=1
  ORDER BY p.id DESC
  LIMIT 4";
-
 $stReco = $pdo->prepare($sqlReco);
 $stReco->bindValue(':cid1', $cid, PDO::PARAM_INT);
 $stReco->bindValue(':cid2', $cid, PDO::PARAM_INT);
@@ -43,7 +42,6 @@ SELECT p.*,
   FROM product p
  ORDER BY p.id DESC
  LIMIT 8";
-
 $stNew = $pdo->prepare($sqlNew);
 $stNew->bindValue(':cid3', $cid, PDO::PARAM_INT);
 $stNew->bindValue(':cid4', $cid, PDO::PARAM_INT);
@@ -56,14 +54,8 @@ $newItems = $stNew->fetchAll();
 --------------------------------*/
 function card_item(array $p, int $cid): string
 {
-    $img = $p['image_url']
-        ? '<img src="' . e($p['image_url']) . '" class="card-img-top rounded-top-3" alt="' . e($p['name']) . '">'
-        : '';
-
-    $cat = $p['category']
-        ? '<span class="badge bg-secondary-subtle text-secondary-emphasis">' . e($p['category']) . '</span>'
-        : '';
-
+    $img = $p['image_url'] ? '<img src="' . e($p['image_url']) . '" class="card-img-top rounded-top-3" alt="' . e($p['name']) . '">' : '';
+    $cat = $p['category'] ? '<span class="badge bg-secondary-subtle text-secondary-emphasis">' . e($p['category']) . '</span>' : '';
     $desc = e(mb_strimwidth($p['description'] ?? '', 0, 80, '…', 'UTF-8'));
 
     $detailBtn = '<a class="btn btn-sm btn-outline-secondary" href="detail.php?id=' . (int)$p['id'] . '">
@@ -125,6 +117,7 @@ function card_item(array $p, int $cid): string
         <a class="btn btn-primary btn-lg" href="product.php"><i class="bi bi-bag"></i> 商品を見る</a>
     </div>
 
+
     <?php if ($recommended): ?>
         <div class="d-flex align-items-center gap-2 mb-3">
             <i class="bi bi-hand-thumbs-up text-danger"></i>
@@ -172,12 +165,12 @@ function card_item(array $p, int $cid): string
             <button class="carousel-control-prev" type="button" data-bs-target="#recoCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
             </button>
-
             <button class="carousel-control-next" type="button" data-bs-target="#recoCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon"></span>
             </button>
         </div>
     <?php endif; ?>
+
 
     <div class="d-flex align-items-center gap-2 mb-2">
         <i class="bi bi-stars text-warning"></i>
