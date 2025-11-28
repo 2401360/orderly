@@ -70,6 +70,78 @@ if ($cid > 0) {
   <title><?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?> | 商品詳細</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    /* review */
+    /* Phần review container */
+.reviews {
+  margin-top: 2rem;
+  background-color:#E0E0E0;
+}
+
+/* Nút viết/ chỉnh sửa review */
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Danh sách review */
+ul.vstack {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Mỗi item review */
+ul.vstack li {
+  /* background-color: #f9f9f9; */
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+ul.vstack li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Tên người review và sao */
+ul.vstack li .d-flex strong {
+  font-size: 1rem;
+  color: #333;
+}
+
+ul.vstack li .text-warning i {
+  color: #ffbf00; /* màu vàng cho sao */
+  font-size: 1rem;
+}
+
+/* Comment text */
+ul.vstack li div.mt-2 {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Ngày đăng */
+ul.vstack li .text-end small {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Text thông báo khi chưa có review */
+p.text-muted {
+  font-style: italic;
+  color: #888;
+}
+
+  </style>
 </head>
 
 <body>
@@ -78,9 +150,6 @@ if ($cid > 0) {
       <a class="btn btn-outline-secondary btn-sm" href="index.php">← 一覧へ戻る</a>
     </nav>
 
-  
-
-</style>
     <style>
 .product-hero {
   padding: 40px;
@@ -159,9 +228,8 @@ if ($cid > 0) {
   align-items: center;
 }
 .product-hero .action-row > * {
-  width: 100%; /* mỗi phần chiếm 1 dòng */
+  width: 100%; 
 }
-
 
 @media (max-width: 768px) {
   .product-hero {
@@ -182,7 +250,6 @@ if ($cid > 0) {
   margin-bottom: 10px;
 }
 }
-
 
 </style>
 
@@ -302,8 +369,6 @@ if ($cid > 0) {
 }
 </style>
 
-
-
 <?php
 // ===== PROCESS DESCRIPTION =====
 $desc = $product['description'] ?? '';
@@ -350,11 +415,99 @@ function splitLine($line) {
     </tbody>
   </table>
 </div>
+<?php
+if (!function_exists('e')) {
+  function e($s) {
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+  }
+}
+
+// Lấy sản phẩm liên quan (cùng category, không trùng id hiện tại)
+$related = [];
+if (!empty($product['category'])) {
+    $sql = "
+        SELECT p.*, " . ($cid > 0 ? "EXISTS(SELECT 1 FROM favorite f WHERE f.customer_id = :cid AND f.product_id = p.id) AS is_fav" : "0 AS is_fav") . "
+        FROM product p
+        WHERE p.category = :cat AND p.id != :id
+        ORDER BY p.created_at DESC
+        LIMIT 8
+    ";
+    $stmt = $pdo->prepare($sql);
+    $params = [
+        ':cat' => $product['category'],
+        ':id'  => $product['id']
+    ];
+    if ($cid > 0) $params[':cid'] = $cid;
+    $stmt->execute($params);
+    $related = $stmt->fetchAll();
+}
+?>
+<!-- ===== RELATED PRODUCTS SLIDER ===== -->
+<?php
+// Lấy ảnh liên quan từ folder /uploads/products/ dựa vào category của sản phẩm
+$related = [];
+$uploadDir = __DIR__ . '/uploads/products/';
+$category = $product['category'] ?? '';
+
+if ($category && is_dir($uploadDir)) {
+    $files = glob($uploadDir . '*'); // lấy tất cả file trong folder
+
+    foreach ($files as $file) {
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        if (!in_array($ext, ['jpg','jpeg','png','webp','gif'])) continue;
+
+        $filename = basename($file);
+
+        // Lọc file theo category trong tên file nếu có (tùy bạn đặt tên file)
+        if (stripos($filename, $category) !== false || stripos($filename, 'product') !== false) {
+            $related[] = [
+                'id' => rand(1000,9999), // id giả
+                'name' => pathinfo($filename, PATHINFO_FILENAME),
+                'price' => rand(500,5000), // giá giả nếu muốn hiển thị
+                'image_url' => $filename
+            ];
+        }
+    }
+
+    // Lấy tối đa 8 ảnh
+    $related = array_slice($related, 0, 8);
+}
+?>
+
+<!-- RELATED PRODUCTS SLIDER -->
+<section class="related-products mt-5">
+  <h4 class="mb-3">おすすめ商品</h4>
+
+  <?php if (!empty($related)): ?>
+    <div class="d-flex overflow-x-auto gap-3 flex-nowrap">
+      <?php foreach ($related as $p): ?>
+        <div class="card related-item flex-shrink-0">
+          <img src="/uploads/products/<?= e($p['image_url'] ?? 'no-image.jpg') ?>"
+               class="card-img-top"
+               alt="<?= e($p['name']) ?>">
+
+          <div class="card-body p-2 d-flex flex-column">
+            <h6 class="card-title mb-1 text-truncate"><?= e($p['name']) ?></h6>
+            <span class="text-muted small mb-2">¥<?= number_format((int)$p['price']) ?></span>
+
+            <a href="detail.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-primary w-100">
+              詳細を見る
+            </a>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  <?php else: ?>
+    <p class="text-muted small ms-1">関連商品がありません。</p>
+  <?php endif; ?>
+</section>
 
 
 
+
+ 
     <!-- レビュー表示 -->
-    <section class="mt-5">
+    <section class="reviews">
       <h2 class="h4">レビュー</h2>
 
       <!-- ⭐ 平均評価（Bootstrapの黄色い星付き） -->
