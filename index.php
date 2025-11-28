@@ -7,31 +7,51 @@ require_once 'header.php';
 $cid = $_SESSION['customer']['id'] ?? 0;
 $pdo = db();
 
+/* ------------------------------
+   おすすめ商品
+--------------------------------*/
 $sqlReco = "
 SELECT p.*,
-       CASE WHEN :cid > 0 AND EXISTS(SELECT 1 FROM favorite f WHERE f.customer_id = :cid AND f.product_id = p.id)
+       CASE WHEN :cid1 > 0 AND EXISTS(
+            SELECT 1
+              FROM favorite f
+             WHERE f.customer_id = :cid2
+               AND f.product_id = p.id)
             THEN 1 ELSE 0 END AS is_fav
   FROM product p
  WHERE COALESCE(p.is_recommended,0)=1
  ORDER BY p.id DESC
  LIMIT 4";
 $stReco = $pdo->prepare($sqlReco);
-$stReco->bindValue(':cid', $cid, PDO::PARAM_INT);
+$stReco->bindValue(':cid1', $cid, PDO::PARAM_INT);
+$stReco->bindValue(':cid2', $cid, PDO::PARAM_INT);
 $stReco->execute();
 $recommended = $stReco->fetchAll();
 
+/* ------------------------------
+   新着商品
+--------------------------------*/
 $sqlNew = "
 SELECT p.*,
-       CASE WHEN :cid > 0 AND EXISTS(SELECT 1 FROM favorite f WHERE f.customer_id = :cid AND f.product_id = p.id)
+       CASE WHEN :cid3 > 0 AND EXISTS(
+            SELECT 1
+              FROM favorite f
+             WHERE f.customer_id = :cid4
+               AND f.product_id = p.id)
             THEN 1 ELSE 0 END AS is_fav
   FROM product p
  ORDER BY p.id DESC
  LIMIT 8";
 $stNew = $pdo->prepare($sqlNew);
-$stNew->bindValue(':cid', $cid, PDO::PARAM_INT);
+$stNew->bindValue(':cid3', $cid, PDO::PARAM_INT);
+$stNew->bindValue(':cid4', $cid, PDO::PARAM_INT);
 $stNew->execute();
 $newItems = $stNew->fetchAll();
 
+
+/* ------------------------------
+   カード描画関数
+--------------------------------*/
 function card_item(array $p, int $cid): string
 {
     $img = $p['image_url'] ? '<img src="' . e($p['image_url']) . '" class="card-img-top rounded-top-3" alt="' . e($p['name']) . '">' : '';
@@ -77,10 +97,13 @@ function card_item(array $p, int $cid): string
 }
 ?>
 
+<!-- HTML here: 省略せず表示します -->
+
 <div class="container py-4">
     <div class="bg-body-tertiary rounded-4 shadow-sm p-4 p-md-5 mb-4 text-center">
         <h1 class="display-6 fw-semibold mb-2">ようこそ Orderly へ</h1>
         <p class="lead mb-4">ヘルシーで美味しいケーキを、あなたのお気に入りから簡単に注文できます。</p>
+
         <div class="row justify-content-center mb-4">
             <div class="col-12 col-md-8">
                 <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm">
@@ -90,18 +113,18 @@ function card_item(array $p, int $cid): string
                 </div>
             </div>
         </div>
+
         <a class="btn btn-primary btn-lg" href="product.php"><i class="bi bi-bag"></i> 商品を見る</a>
     </div>
 
-    <?php if ($recommended): ?>
 
+    <?php if ($recommended): ?>
         <div class="d-flex align-items-center gap-2 mb-3">
             <i class="bi bi-hand-thumbs-up text-danger"></i>
             <h2 class="h5 m-0">おすすめ</h2>
         </div>
 
         <div id="recoCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-
             <div class="carousel-indicators">
                 <?php foreach ($recommended as $index => $p): ?>
                     <button type="button"
@@ -145,15 +168,15 @@ function card_item(array $p, int $cid): string
             <button class="carousel-control-next" type="button" data-bs-target="#recoCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon"></span>
             </button>
-
         </div>
-
     <?php endif; ?>
+
 
     <div class="d-flex align-items-center gap-2 mb-2">
         <i class="bi bi-stars text-warning"></i>
         <h2 class="h5 m-0">新着</h2>
     </div>
+
     <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
         <?php foreach ($newItems as $p) echo card_item($p, $cid); ?>
     </div>
