@@ -130,7 +130,7 @@ if ($action === 'edit' && $id > 0) {
 $products = $pdo->query('SELECT * FROM product ORDER BY id DESC')->fetchAll();
 ?>
 <div class="container py-4">
-    <h1 class="h4 mb-3">商品管理（管理者）</h1>
+    <h1 class="h4 mb-3">商品管理</h1>
 
     <?php if ($notice): ?>
         <div class="alert alert-success"><?= e($notice) ?></div>
