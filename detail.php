@@ -96,19 +96,20 @@ $recommended = $stReco->fetchAll();
     </nav>
 
     <style>
-      .container{
+      .container {
         margin: 0 20px;
-        max-width:96vw;
+        max-width: 96vw;
       }
+
       .product-hero {
         padding: 40px 20px;
-    margin-bottom: 40px;
-    width: 96%;
-    display: flex;
-    align-items: center;
-    background: #FFF6EE;
-    box-shadow: none;
-    margin-left: 21px;
+        margin-bottom: 40px;
+        width: 96%;
+        display: flex;
+        align-items: center;
+        background: #FFF6EE;
+        box-shadow: none;
+        margin-left: 21px;
       }
 
       .product-hero .hero-image {
@@ -288,81 +289,86 @@ $recommended = $stReco->fetchAll();
     // ===== STYLE =====
     ?>
     <style>
-  .spec-container {
-  display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding-left: 33px;
-    padding-right: 9px;
-    margin: 10px 20px;
-    box-sizing: border-box;
-    margin-left: -10px;
-}
-  .spec-images {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  flex-wrap: nowrap;     
-}
-  .spec-images img {
-  width: 120px;
-  height: auto;
-  border-radius: 8px;
-}
-  .spec-img-box {
-    text-align: center;       
-  }
+      .spec-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-left: 33px;
+        padding-right: 9px;
+        margin: 10px 20px;
+        box-sizing: border-box;
+        margin-left: -10px;
+      }
 
-  .spec-img-box img {
-    width: 130px;             
-    height: auto;
-    border-radius: 10px;
-    display: block;
-    margin: 0 auto 8px;       
-  }
+      .spec-images {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        flex-wrap: nowrap;
+      }
 
-  .spec-caption {
-    font-size: 0.9rem;
-    color: #555;
-  }
+      .spec-images img {
+        width: 120px;
+        height: auto;
+        border-radius: 8px;
+      }
 
-  .table-spec {
-    width: 100%;
-    max-width: 600px;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-    color: #444;
-    margin-bottom: 40px;
-  }
+      .spec-img-box {
+        text-align: center;
+      }
 
-  .table-spec td {
-    padding: 10px 20px;
-    border-bottom: 1px solid #e0dcd3;
-    vertical-align: top;
-  }
+      .spec-img-box img {
+        width: 130px;
+        height: auto;
+        border-radius: 10px;
+        display: block;
+        margin: 0 auto 8px;
+      }
 
-  .table-spec tr:last-child td {
-    border-bottom: none;
-  }
+      .spec-caption {
+        font-size: 0.9rem;
+        color: #555;
+      }
 
-  .table-spec .td-key {
-    width: 40%;
-    background-color: #F9F6ED;
-    font-weight: 600;
-  }
+      .table-spec {
+        width: 100%;
+        max-width: 600px;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        color: #444;
+        margin-bottom: 40px;
+      }
 
-  .table-spec .td-value {
-    width: 65%;
-  }
-  .related-products{
-    background-color:#F9F6ED;
-    padding: 20px 20px;
-  }
-  .review{
-    background-color: #EFE8E4;
-    padding: 30px 30px;
-  }
-</style>
+      .table-spec td {
+        padding: 10px 20px;
+        border-bottom: 1px solid #e0dcd3;
+        vertical-align: top;
+      }
+
+      .table-spec tr:last-child td {
+        border-bottom: none;
+      }
+
+      .table-spec .td-key {
+        width: 40%;
+        background-color: #F9F6ED;
+        font-weight: 600;
+      }
+
+      .table-spec .td-value {
+        width: 65%;
+      }
+
+      .related-products {
+        background-color: #F9F6ED;
+        padding: 20px 20px;
+      }
+
+      .review {
+        background-color: #EFE8E4;
+        padding: 30px 30px;
+      }
+    </style>
 
     <?php
     // ===== PROCESS DESCRIPTION =====
@@ -396,54 +402,54 @@ $recommended = $stReco->fetchAll();
     <!-- ===== TABLE OUTPUT ===== -->
     <div class="spec-container">
 
-  <!-- TABLE -->
-  <div>
-    <table class="table-spec">
-      <tbody>
-        <?php foreach ($lines as $line): ?>
-        <?php
-          $line = trim($line);
-          if ($line === '') continue;
-          list($left, $right) = splitLine($line);
-        ?>
-          <tr>
-            <td class="td-key"><?= htmlspecialchars($left, ENT_QUOTES, 'UTF-8') ?></td>
-            <td class="td-value"><?= htmlspecialchars($right, ENT_QUOTES, 'UTF-8') ?></td>
-          </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-  </div>
-  <!-- IMAGES -->
-<div class="spec-images">
-  <div class="spec-img-box">
-    <img src="./image/noshi.jpg">
-  
-  </div>
+      <!-- TABLE -->
+      <div>
+        <table class="table-spec">
+          <tbody>
+            <?php foreach ($lines as $line): ?>
+              <?php
+              $line = trim($line);
+              if ($line === '') continue;
+              list($left, $right) = splitLine($line);
+              ?>
+              <tr>
+                <td class="td-key"><?= htmlspecialchars($left, ENT_QUOTES, 'UTF-8') ?></td>
+                <td class="td-value"><?= htmlspecialchars($right, ENT_QUOTES, 'UTF-8') ?></td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+      <!-- IMAGES -->
+      <div class="spec-images">
+        <div class="spec-img-box">
+          <img src="./image/noshi.jpg">
 
-  <div class="spec-img-box">
-    <img src="./image/wrap.jpg">
-    
-  </div>
+        </div>
 
-  <div class="spec-img-box">
-    <img src="./image/mcard.jpg">
-   
-  </div>
+        <div class="spec-img-box">
+          <img src="./image/wrap.jpg">
 
-  <div class="spec-img-box">
-    <img src="./image/bag.jpg">
-  </div>
-</div>
-</div>
-<div class="mt-25px mt-md-55px pt-25px pt-md-35px" style="border-top: 2px solid #230e02;"></div>
-<?php
-  if (!function_exists('e')) {
-    function e($s)
-    {
-      return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+        </div>
+
+        <div class="spec-img-box">
+          <img src="./image/mcard.jpg">
+
+        </div>
+
+        <div class="spec-img-box">
+          <img src="./image/bag.jpg">
+        </div>
+      </div>
+    </div>
+    <div class="mt-25px mt-md-55px pt-25px pt-md-35px" style="border-top: 2px solid #230e02;"></div>
+    <?php
+    if (!function_exists('e')) {
+      function e($s)
+      {
+        return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+      }
     }
-  }
     // Lấy sản phẩm liên quan (cùng category, không trùng id hiện tại)
     $related = [];
     if (!empty($product['category'])) {
@@ -471,7 +477,7 @@ $recommended = $stReco->fetchAll();
     $category = $product['category'] ?? '';
 
     if ($category && is_dir($uploadDir)) {
-      $files = glob($uploadDir . '*'); 
+      $files = glob($uploadDir . '*');
 
       foreach ($files as $file) {
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
@@ -479,9 +485,9 @@ $recommended = $stReco->fetchAll();
         $filename = basename($file);
         if (stripos($filename, $category) !== false || stripos($filename, 'product') !== false) {
           $related[] = [
-            'id' => rand(1000, 9999), 
+            'id' => rand(1000, 9999),
             'name' => pathinfo($filename, PATHINFO_FILENAME),
-            'price' => rand(500, 5000), 
+            'price' => rand(500, 5000),
             'image_url' => $filename
           ];
         }
@@ -497,8 +503,8 @@ $recommended = $stReco->fetchAll();
         <div id="recoCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
           <div class="carousel-inner">
             <?php
-              $chunks = array_chunk($recommended, 4);
-              foreach ($chunks as $i => $chunk):
+            $chunks = array_chunk($recommended, 4);
+            foreach ($chunks as $i => $chunk):
             ?>
               <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>">
                 <div class="row row-cols-2 row-cols-md-4 g-2 px-3">
@@ -545,7 +551,7 @@ $recommended = $stReco->fetchAll();
     </section>
     <div class="mt-25px mt-md-55px pt-25px pt-md-35px" style="border-top: 2px solid #230e02; margin-top: 50px;"></div>
     <!-- レビュー表示 -->
-    <section class="review mt-5">
+    <section id="review-section" class="review mt-5">
       <h2 class="mb-5 text-center">レビュー</h2>
       <!-- ⭐ 平均評価（Bootstrapの黄色い星付き） -->
       <p class="text-muted mb-3">
@@ -607,7 +613,7 @@ $recommended = $stReco->fetchAll();
       <?php else: ?>
         <p>まだレビューはありません。</p>
       <?php endif; ?>
-      </section>
+    </section>
     <!-- トースト通知 -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1080;">
       <div id="favToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -686,4 +692,5 @@ $recommended = $stReco->fetchAll();
     })();
   </script>
 </body>
+
 </html>
