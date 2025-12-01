@@ -96,26 +96,25 @@ $recommended = $stReco->fetchAll();
     </nav>
 
     <style>
+      .container{
+        margin: 0 20px;
+        max-width:96vw;
+      }
       .product-hero {
-        padding: 40px;
-        margin-bottom: 40px;
-        width: 100%;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 30px;
-        background-color: #F9F6E9;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        padding: 40px 20px;
+    margin-bottom: 40px;
+    width: 96%;
+    display: flex;
+    align-items: center;
+    background: #FFF6EE;
+    box-shadow: none;
+    margin-left: 21px;
       }
 
       .product-hero .hero-image {
         flex: 1 1 40%;
         max-width: 500px;
         order: 0;
-        /* đặt ảnh bên phải */
       }
 
       .product-hero .hero-image img {
@@ -128,11 +127,9 @@ $recommended = $stReco->fetchAll();
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        /* phân bố theo chiều cao ảnh */
         gap: 20px;
         padding-left: 50px;
         order: 1;
-        /* chữ bên trái */
         text-align: left;
       }
 
@@ -291,40 +288,81 @@ $recommended = $stReco->fetchAll();
     // ===== STYLE =====
     ?>
     <style>
-      /* Bảng thông số (spec) kiểu Suzette — nhẹ nhàng, tinh tế */
-      .table-spec {
-        width: 100%;
-        max-width: 600px;
-        /* giới hạn chiều rộng để nhìn gọn */
-        margin-left: 50px;
-        border-collapse: collapse;
-        font-size: 0.95rem;
-        color: #444;
-        margin-bottom: 100px;
-      }
+  .spec-container {
+  display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-left: 33px;
+    padding-right: 9px;
+    margin: 10px 20px;
+    box-sizing: border-box;
+    margin-left: -10px;
+}
+  .spec-images {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: nowrap;     
+}
+  .spec-images img {
+  width: 120px;
+  height: auto;
+  border-radius: 8px;
+}
+  .spec-img-box {
+    text-align: center;       
+  }
 
-      .table-spec td {
-        padding: 10px 20px;
-        border-bottom: 1px solid #e0dcd3;
-        /* đường kẻ nhẹ */
-        vertical-align: top;
-      }
+  .spec-img-box img {
+    width: 130px;             
+    height: auto;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto 8px;       
+  }
 
-      .table-spec tr:last-child td {
-        border-bottom: none;
-      }
+  .spec-caption {
+    font-size: 0.9rem;
+    color: #555;
+  }
 
-      .table-spec .td-key {
-        width: 40%;
-        /* cột key nhỏ hơn */
-        background-color: #F9F6ED;
-        font-weight: 600;
-      }
+  .table-spec {
+    width: 100%;
+    max-width: 600px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    color: #444;
+    margin-bottom: 40px;
+  }
 
-      .table-spec .td-value {
-        width: 65%;
-      }
-    </style>
+  .table-spec td {
+    padding: 10px 20px;
+    border-bottom: 1px solid #e0dcd3;
+    vertical-align: top;
+  }
+
+  .table-spec tr:last-child td {
+    border-bottom: none;
+  }
+
+  .table-spec .td-key {
+    width: 40%;
+    background-color: #F9F6ED;
+    font-weight: 600;
+  }
+
+  .table-spec .td-value {
+    width: 65%;
+  }
+  .related-products{
+    background-color:#F9F6ED;
+    padding: 20px 20px;
+  }
+  .review{
+    background-color: #EFE8E4;
+    padding: 30px 30px;
+  }
+</style>
 
     <?php
     // ===== PROCESS DESCRIPTION =====
@@ -356,31 +394,56 @@ $recommended = $stReco->fetchAll();
     ?>
 
     <!-- ===== TABLE OUTPUT ===== -->
-    <div class="mt-3">
-      <table class="table-spec">
-        <tbody>
-          <?php foreach ($lines as $line): ?>
-            <?php
-            $line = trim($line); // ← loại bỏ \n, \r, space
-            if ($line === '') continue; // ← bỏ dòng trống thật sự
-            list($left, $right) = splitLine($line);
-            ?>
-            <tr>
-              <td class="td-key"><?= htmlspecialchars($left, ENT_QUOTES, 'UTF-8') ?></td>
-              <td class="td-value"><?= htmlspecialchars($right, ENT_QUOTES, 'UTF-8') ?></td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-    </div>
-    <?php
-    if (!function_exists('e')) {
-      function e($s)
-      {
-        return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
-      }
-    }
+    <div class="spec-container">
 
+  <!-- TABLE -->
+  <div>
+    <table class="table-spec">
+      <tbody>
+        <?php foreach ($lines as $line): ?>
+        <?php
+          $line = trim($line);
+          if ($line === '') continue;
+          list($left, $right) = splitLine($line);
+        ?>
+          <tr>
+            <td class="td-key"><?= htmlspecialchars($left, ENT_QUOTES, 'UTF-8') ?></td>
+            <td class="td-value"><?= htmlspecialchars($right, ENT_QUOTES, 'UTF-8') ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+  <!-- IMAGES -->
+<div class="spec-images">
+  <div class="spec-img-box">
+    <img src="./image/noshi.jpg">
+  
+  </div>
+
+  <div class="spec-img-box">
+    <img src="./image/wrap.jpg">
+    
+  </div>
+
+  <div class="spec-img-box">
+    <img src="./image/mcard.jpg">
+   
+  </div>
+
+  <div class="spec-img-box">
+    <img src="./image/bag.jpg">
+  </div>
+</div>
+</div>
+<div class="mt-25px mt-md-55px pt-25px pt-md-35px" style="border-top: 2px solid #230e02;"></div>
+<?php
+  if (!function_exists('e')) {
+    function e($s)
+    {
+      return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+    }
+  }
     // Lấy sản phẩm liên quan (cùng category, không trùng id hiện tại)
     $related = [];
     if (!empty($product['category'])) {
@@ -390,7 +453,7 @@ $recommended = $stReco->fetchAll();
         WHERE p.category = :cat AND p.id != :id
         ORDER BY p.created_at DESC
         LIMIT 8
-    ";
+      ";
       $stmt = $pdo->prepare($sql);
       $params = [
         ':cat' => $product['category'],
@@ -403,62 +466,45 @@ $recommended = $stReco->fetchAll();
     ?>
     <!-- ===== RELATED PRODUCTS SLIDER ===== -->
     <?php
-    // Lấy ảnh liên quan từ folder /uploads/products/ dựa vào category của sản phẩm
     $related = [];
     $uploadDir = __DIR__ . '/uploads/products/';
     $category = $product['category'] ?? '';
 
     if ($category && is_dir($uploadDir)) {
-      $files = glob($uploadDir . '*'); // lấy tất cả file trong folder
+      $files = glob($uploadDir . '*'); 
 
       foreach ($files as $file) {
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) continue;
-
         $filename = basename($file);
-
-        // Lọc file theo category trong tên file nếu có (tùy bạn đặt tên file)
         if (stripos($filename, $category) !== false || stripos($filename, 'product') !== false) {
           $related[] = [
-            'id' => rand(1000, 9999), // id giả
+            'id' => rand(1000, 9999), 
             'name' => pathinfo($filename, PATHINFO_FILENAME),
-            'price' => rand(500, 5000), // giá giả nếu muốn hiển thị
+            'price' => rand(500, 5000), 
             'image_url' => $filename
           ];
         }
       }
-
-      // Lấy tối đa 8 ảnh
       $related = array_slice($related, 0, 8);
     }
     ?>
 
     <!-- RELATED PRODUCTS SLIDER -->
     <section class="related-products mt-5">
-      <h4 class="mb-3">おすすめ商品</h4>
-
+      <h2 class="mb-5 text-center">こちらの商品もおすすめです</h2>
       <?php if ($recommended): ?>
-        <div class="d-flex align-items-center gap-2 mb-3">
-          <i class="bi bi-hand-thumbs-up text-danger"></i>
-          <h2 class="h5 m-0">おすすめ</h2>
-        </div>
-
         <div id="recoCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-
           <div class="carousel-inner">
-
             <?php
-            // 1スライドに4個ずつ分割
-            $chunks = array_chunk($recommended, 4);
-            foreach ($chunks as $i => $chunk):
+              $chunks = array_chunk($recommended, 4);
+              foreach ($chunks as $i => $chunk):
             ?>
               <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>">
                 <div class="row row-cols-2 row-cols-md-4 g-2 px-3">
-
                   <?php foreach ($chunk as $p): ?>
                     <div class="col">
                       <div class="card h-100 shadow-sm border-0">
-
                         <!-- 画像を小さく -->
                         <img src="<?= e($p['image_url']) ?>"
                           alt="<?= e($p['name']) ?>"
@@ -469,7 +515,6 @@ $recommended = $stReco->fetchAll();
                           <h6 class="card-title mb-1 text-truncate" style="font-size: 0.85rem;">
                             <?= e($p['name']) ?>
                           </h6>
-
                           <p class="text-muted small mb-2">
                             ¥<?= number_format($p['price']) ?>
                           </p>
@@ -480,7 +525,6 @@ $recommended = $stReco->fetchAll();
                             詳細
                           </a>
                         </div>
-
                       </div>
                     </div>
                   <?php endforeach; ?>
@@ -488,9 +532,7 @@ $recommended = $stReco->fetchAll();
                 </div>
               </div>
             <?php endforeach; ?>
-
           </div>
-
           <button class="carousel-control-prev" type="button" data-bs-target="#recoCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
           </button>
@@ -498,21 +540,13 @@ $recommended = $stReco->fetchAll();
           <button class="carousel-control-next" type="button" data-bs-target="#recoCarousel" data-bs-slide="next">
             <span class="carousel-control-next-icon"></span>
           </button>
-
         </div>
       <?php endif; ?>
-
     </section>
-
-
-
-
-
-
+    <div class="mt-25px mt-md-55px pt-25px pt-md-35px" style="border-top: 2px solid #230e02; margin-top: 50px;"></div>
     <!-- レビュー表示 -->
-    <section class="mt-5">
-      <h2 class="h4">レビュー</h2>
-
+    <section class="review mt-5">
+      <h2 class="mb-5 text-center">レビュー</h2>
       <!-- ⭐ 平均評価（Bootstrapの黄色い星付き） -->
       <p class="text-muted mb-3">
         平均評価：
@@ -538,7 +572,6 @@ $recommended = $stReco->fetchAll();
           —（0件）
         <?php endif; ?>
       </p>
-
       <?php if ($eligible): ?>
         <p>
           <a class="btn btn-sm btn-primary" href="review-input.php?product_id=<?= $productId ?>">
@@ -552,7 +585,7 @@ $recommended = $stReco->fetchAll();
       <?php if ($reviews): ?>
         <ul class="list-unstyled vstack gap-3">
           <?php foreach ($reviews as $r): ?>
-            <li class="border rounded p-3">
+            <li class="border rounded p-3" style="background-color: #c3d2c2ff;">
               <div class="d-flex justify-content-between align-items-center">
                 <strong><?= htmlspecialchars($r['name'], ENT_QUOTES, 'UTF-8') ?></strong>
                 <span class="text-warning">
@@ -574,8 +607,7 @@ $recommended = $stReco->fetchAll();
       <?php else: ?>
         <p>まだレビューはありません。</p>
       <?php endif; ?>
-    </section>
-
+      </section>
     <!-- トースト通知 -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1080;">
       <div id="favToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -654,5 +686,4 @@ $recommended = $stReco->fetchAll();
     })();
   </script>
 </body>
-
 </html>
