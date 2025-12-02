@@ -1,5 +1,4 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
 require_once 'app.php';
 $page_title = '商品一覧';
 require_once 'header.php';

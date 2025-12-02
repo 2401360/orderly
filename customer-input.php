@@ -1,4 +1,6 @@
-<?php $page_title = 'Sign up / Profile';
+<?php
+require_once 'app.php';
+$page_title = 'Sign up / Profile';
 require_once 'header.php'; ?>
 <?php
 $editing = isset($_SESSION['customer']);

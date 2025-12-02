@@ -1,6 +1,5 @@
 <?php
-session_start();
-require_once __DIR__ . '/db-connect.php';
+require_once 'app.php';
 
 if (empty($_SESSION['customer'])) {
     header('Location: login-input.php');
@@ -17,16 +16,7 @@ if ($productId <= 0 || $rating < 1 || $rating > 5) {
     exit;
 }
 
-try {
-    $pdo = new PDO('mysql:host=' . SERVER . ';dbname=' . DBNAME . ';charset=utf8mb4', USER, PASS, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    ]);
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo 'DB接続に失敗しました。';
-    exit;
-}
-
+$pdo = db();
 
 $sql = '
 SELECT 1
@@ -41,7 +31,6 @@ if (!$st->fetchColumn()) {
     echo 'この商品は未購入のため、レビューできません。';
     exit;
 }
-
 
 $sql = '
 INSERT INTO review (product_id, customer_id, rating, comment, created_at)

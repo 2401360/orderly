@@ -262,7 +262,7 @@ $recommended = $stReco->fetchAll();
     const now = Date.now();
 
     // 5分
-    const LIMIT = 30 * 1000;
+    const LIMIT = 300 * 1000;
 
     // 動画を再生すべきかの判定
     const shouldPlay = !lastPlayed || // 初回

@@ -1,6 +1,6 @@
-<?php session_start(); ?>
-<?php require_once 'header.php'; ?>
 <?php
+require_once 'app.php';
+require_once 'header.php';
 $id = $_REQUEST['id'] ?? null;
 if ($id !== null && isset($_SESSION['product'][$id])) {
   unset($_SESSION['product'][$id]);

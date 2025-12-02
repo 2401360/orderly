@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once 'app.php';
+$page_title = 'Cart';
 require_once 'header.php';
 
 function post($key)

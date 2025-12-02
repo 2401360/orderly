@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once 'app.php';
+require_once 'header.php';
 
 if (!isset($_SESSION['customer'])) {
     flash('warning', '購入手続きを行うにはログインしてください。');

@@ -1,4 +1,6 @@
-<?php $page_title = 'Confirm Purchase';
+<?php
+require_once 'app.php';
+$page_title = 'Confirm Purchase';
 require_once 'header.php'; ?>
 <style>
   .customer-info {
