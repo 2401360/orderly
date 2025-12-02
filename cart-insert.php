@@ -1,6 +1,6 @@
-<?php session_start(); ?>
-<?php require_once 'header.php'; ?>
 <?php
+require_once 'app.php';
+require_once 'header.php';
 $id = $_REQUEST['id'] ?? null;
 $name = $_REQUEST['name'] ?? '';
 $price = (int)($_REQUEST['price'] ?? 0);

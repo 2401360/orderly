@@ -1,7 +1,6 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
-
 require_once 'app.php';
+$page_title = 'Sales Details';
 require_once 'header.php';
 
 $is_admin = (isset($_SESSION['customer']['role']) && $_SESSION['customer']['role'] === 'admin');

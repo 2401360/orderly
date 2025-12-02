@@ -1,7 +1,6 @@
 <?php
-session_start();
 require_once 'app.php';
-
+require_once 'header.php';
 unset($_SESSION['customer']);
 try {
     $pdo = db();

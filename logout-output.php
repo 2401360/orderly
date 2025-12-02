@@ -1,6 +1,6 @@
 <?php
-session_start();
-
+require_once 'app.php';
+require_once 'header.php';
 $_SESSION = [];
 
 if (ini_get('session.use_cookies')) {

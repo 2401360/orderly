@@ -1,6 +1,7 @@
-<?php $page_title = 'Purchase History';
+<?php
+require_once 'app.php';
+$page_title = 'Purchase History';
 require_once 'header.php'; ?>
-<?php require_once 'app.php'; ?>
 <div class="container py-4">
   <?php
   if (!isset($_SESSION['customer'])) {
