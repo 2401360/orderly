@@ -130,7 +130,7 @@ if ($action === 'edit' && $id > 0) {
 $products = $pdo->query('SELECT * FROM product ORDER BY id DESC')->fetchAll();
 ?>
 <div class="container py-4">
-    <h1 class="h4 mb-3">商品管理（管理者）</h1>
+    <h1 class="h4 mb-3">商品管理</h1>
 
     <?php if ($notice): ?>
         <div class="alert alert-success"><?= e($notice) ?></div>
@@ -165,7 +165,7 @@ $products = $pdo->query('SELECT * FROM product ORDER BY id DESC')->fetchAll();
                 </div>
 
                 <div class="col-md-3 d-flex align-items-center">
-                    <div class="form-check mt-4">
+                    <div class="col-md-3">
                         <input class="form-check-input" type="checkbox" name="is_recommended" id="createRec">
                         <label class="form-check-label" for="createRec">おすすめ</label>
                     </div>
@@ -217,7 +217,7 @@ $products = $pdo->query('SELECT * FROM product ORDER BY id DESC')->fetchAll();
                     </div>
 
                     <div class="col-md-3 d-flex align-items-center">
-                        <div class="form-check mt-4">
+                        <div class="col-md-3">
                             <input class="form-check-input" type="checkbox" name="is_recommended" id="editRec" <?= !empty($edit_item['is_recommended']) ? 'checked' : '' ?>>
                             <label class="form-check-label" for="editRec">おすすめ</label>
                         </div>
