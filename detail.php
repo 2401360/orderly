@@ -248,7 +248,6 @@ $recommended = $stReco->fetchAll();
     font-size: 1.3rem;
     font-weight: 700;
     text-align: center;
-    margin-bottom: 1rem;
   }
 
   /* ======================================
@@ -360,12 +359,6 @@ $recommended = $stReco->fetchAll();
   }
 </style>
 
-
-
-<!-- ===============================
-     PAGE CONTENT
-=============================== -->
-
 <div class="section-block">
 
   <!-- 商品ヘッダー -->
@@ -440,13 +433,6 @@ $recommended = $stReco->fetchAll();
 
   </div>
 
-
-
-
-  <!-- ===============================
-       SPEC SECTION
-  =============================== -->
-
   <?php
   $desc = $product['description'] ?? '';
   $lines = preg_split('/\r\n|\r|\n/', trim($desc));
@@ -477,7 +463,6 @@ $recommended = $stReco->fetchAll();
       </table>
     </div>
 
-    <!-- RIGHT IMAGES + SLIDER -->
     <div style="flex:1;">
 
       <div class="spec-images mb-4">
@@ -488,9 +473,9 @@ $recommended = $stReco->fetchAll();
       </div>
 
       <?php if ($recommended): ?>
-        <h3 class="reco-title my-5">こちらもおすすめ</h3>
+        <h3 class="reco-title my-1">こちらもおすすめ</h3>
 
-        <div id="recoCarousel" class="carousel slide my-5" data-bs-ride="carousel">
+        <div id="recoCarousel" class="carousel slide my-2" data-bs-ride="carousel">
           <div class="carousel-inner">
             <?php
             $chunks = array_chunk($recommended, 2);
@@ -535,11 +520,6 @@ $recommended = $stReco->fetchAll();
   </div>
 
 
-
-
-  <!-- ===============================
-       REVIEW SECTION
-  =============================== -->
   <section id="review-section" class="section-block review">
 
     <h2 class="mb-4 text-center">レビュー</h2>
