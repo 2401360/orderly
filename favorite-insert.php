@@ -1,6 +1,5 @@
 <?php
 require_once 'app.php';
-require_once 'header.php';
 
 if (!isset($_SESSION['customer'])) {
     flash('warning', 'お気に入りに追加するにはログインしてください。');

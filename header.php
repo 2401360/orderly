@@ -11,8 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <style>
-    body,
-    html {
+    body {
       margin: 0;
       padding: 0;
       font-family: 'Noto Sans JP', sans-serif;
@@ -612,6 +611,142 @@
 
     .review:hover {
       box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    /* product page */
+    .showcase-container {
+      position: relative;
+      width: 1202px;
+      margin: 0 auto;
+      aspect-ratio: 1202/ 954;
+      /* 背景画像の縦横比 */
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* 背景 */
+    .showcase-img {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .cake-area {
+      position: absolute;
+      width: 90%;
+      height: 100%;
+      bottom: 265px;
+      display: flex;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .cat-plate {
+      position: absolute;
+      width: 20%;
+      height: 10%;
+      top: 10px;
+      /* ← 上部中央に見やすく配置 */
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 8;
+      /* ★ ケーキより前面へ */
+    }
+
+    .cat-plate-img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      object-fit: contain;
+      z-index: 9;
+    }
+
+    .cat-plate p {
+      position: relative;
+      font-size: 1.4rem;
+      color: #3a2d1a;
+      font-weight: bold;
+      z-index: 10;
+    }
+
+    /* 各段 */
+    .showcase-tier {
+      position: absolute;
+      width: 100%;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 3;
+      overflow: visible;
+    }
+
+    /* ケーキ＋皿 */
+    .cake-item {
+      position: relative;
+      height: 100%;
+      width: 25%;
+      z-index: 4;
+      transition: transform 0.25s ease, z-index 0s;
+    }
+
+    /* 皿 */
+    .name-plate {
+      width: 100%;
+      height: 20%;
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+    }
+
+    .name-plate-img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      object-fit: fill;
+      z-index: 6;
+    }
+
+    .name-plate p {
+      position: relative;
+      color: #3a2d1a;
+      /* お皿に合うように少し濃いブラウン */
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      z-index: 7;
+    }
+
+    /* ケーキ画像 */
+    .cake-img {
+      position: absolute;
+      bottom: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 80%;
+      object-fit: contain;
+      z-index: 5;
+    }
+
+    /* hover effect */
+    .cake-item:hover {
+      transform: scale(1.15);
     }
   </style>
 </head>

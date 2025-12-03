@@ -1,6 +1,5 @@
 <?php
 require_once 'app.php';
-require_once 'header.php';
 if (!isset($_SESSION['customer'])) {
     header('Location: login-input.php');
     exit;
