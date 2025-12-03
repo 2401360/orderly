@@ -73,19 +73,33 @@ $stReco->execute();
 $recommended = $stReco->fetchAll();
 ?>
 
+
+
 <style>
-  /* ===== your CSS (unchanged) ===== */
+  /* ====================================
+   GLOBAL LAYOUT
+==================================== */
+  .section-block {
+    width: 100%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  /* ====================================
+   PRODUCT HERO
+==================================== */
   .product-hero {
     display: flex;
     align-items: center;
     background: #FFF6EE;
-    padding: 40px;
-    margin-bottom: 40px;
+    padding: 40px 20px;
     border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
-    gap: 40px;
     border: 1px solid #f0f0f0;
+    gap: 40px;
     transition: .25s;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
   }
 
   .product-hero:hover {
@@ -106,38 +120,96 @@ $recommended = $stReco->fetchAll();
     flex: 1 1 50%;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 20px;
-    padding-left: 50px;
+    padding-left: 40px;
   }
 
+  /* Buttons */
+  .product-hero .btn-buy,
+  .product-hero .btn-fav {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    border: none;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .product-hero .btn-buy {
+    background-color: #693529;
+    color: #fff;
+  }
+
+  .product-hero .btn-buy:hover {
+    background-color: #e6a800;
+  }
+
+  .product-hero .btn-fav {
+    background-color: #ff4d4d;
+    color: #fff;
+  }
+
+  .product-hero .btn-fav:hover {
+    background-color: #e60000;
+  }
+
+  @media (max-width: 768px) {
+    .product-hero {
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .product-hero .hero-text {
+      padding-left: 0;
+    }
+  }
+
+  /* ====================================
+   SPEC SECTION
+==================================== */
   .spec-container {
     background: #FFF;
     display: flex;
     justify-content: space-between;
-    padding: 40px;
+    align-items: flex-start;
+    padding: 40px 20px;
     border-radius: 16px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
     border: 1px solid #f0f0f0;
     gap: 40px;
   }
 
+  /* images */
   .spec-images {
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     gap: 20px;
+  }
+
+  .spec-images img {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
   }
 
   .spec-img-box img {
     width: 130px;
     border-radius: 10px;
+    margin: 0 auto 8px;
   }
 
+  /* ====================================
+   SPEC TABLE
+==================================== */
   .table-spec {
     width: 100%;
     max-width: 600px;
     border-collapse: collapse;
-    font-size: .95rem;
-    color: #444;
+    font-size: 0.95rem;
     margin-bottom: 40px;
     border: 1px solid #ddd;
   }
@@ -145,6 +217,7 @@ $recommended = $stReco->fetchAll();
   .table-spec td {
     padding: 10px 20px;
     border-bottom: 1px solid #e0dcd3;
+    vertical-align: top;
   }
 
   .table-spec tr:last-child td {
@@ -153,13 +226,20 @@ $recommended = $stReco->fetchAll();
 
   .table-spec .td-key {
     width: 40%;
-    background: #F9F6ED;
+    background-color: #F9F6ED;
     font-weight: 600;
   }
 
+  .table-spec .td-value {
+    width: 65%;
+  }
+
+  /* ====================================
+   REVIEW Section
+==================================== */
   .review {
-    background: #EFE8E4;
-    padding: 40px;
+    background-color: #EFE8E4;
+    padding: 30px 30px;
     border-radius: 16px;
     margin-top: 50px;
   }
@@ -167,31 +247,148 @@ $recommended = $stReco->fetchAll();
   .reco-title {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #5a4332;
     text-align: center;
     margin-bottom: 1rem;
-    letter-spacing: 0.5px;
+  }
+
+  /* ======================================
+   HERO TEXT BEAUTIFY
+====================================== */
+
+  .product-hero .hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-left: 40px;
+  }
+
+  /* 商品名 */
+  .product-hero .hero-text h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.35;
+    color: #3e2a1f;
+    margin-bottom: 4px;
+  }
+
+  /* サブ情報ブロック（評価 + レビューリンク） */
+  .product-hero .hero-text .sub-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* 評価テキスト */
+  .product-hero .hero-text .rating-text {
+    font-size: 0.95rem;
+    color: #7a6b62;
+    letter-spacing: 0.3px;
+    margin-bottom: 0;
+  }
+
+  .product-hero .hero-text .rating-stars i {
+    color: #e6b800;
+    margin-right: 2px;
+  }
+
+  /* レビューを見る */
+  .product-hero .hero-text .btn-review {
+    display: inline-block;
+    width: fit-content;
+    padding: 6px 14px;
+    background: #fff2d9;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #8a6b32;
+    border: 1px solid #e6d5b8;
+    transition: 0.3s ease;
+  }
+
+  .product-hero .hero-text .btn-review:hover {
+    background: #ffe4a8;
+  }
+
+  /* 価格 */
+  .product-hero .hero-text .product-price {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #5a2e1a;
+    margin-top: 6px;
+  }
+
+  /* アクションエリア（数量 + カート + お気に入り） */
+  .product-hero .hero-text .action-row {
+    background: #fff9f3;
+    border: 1px solid #f5e6d8;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .05);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* 数量 */
+  .product-hero .hero-text .form-label {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #5a4637;
+  }
+
+  .product-hero .hero-text select.form-select {
+    border-radius: 6px;
+    border: 1px solid #d6c8bb;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+
+  /* モバイル整形 */
+  @media (max-width: 768px) {
+    .product-hero .hero-text {
+      padding-left: 0;
+    }
+
+    .product-hero .hero-text h1 {
+      font-size: 1.6rem;
+    }
+
+    .product-hero .hero-text .product-price {
+      font-size: 1.8rem;
+    }
   }
 </style>
 
-<div class="container py-4">
+
+
+<!-- ===============================
+     PAGE CONTENT
+=============================== -->
+
+<div class="section-block">
 
   <!-- 商品ヘッダー -->
   <div class="product-hero">
+
     <div class="hero-text">
-      <div>
-        <h1 class="h3"><?= e($product['name']) ?></h1>
+
+      <!-- 商品タイトル -->
+      <h1><?= e($product['name']) ?></h1>
+
+      <!-- サブ情報 -->
+      <div class="sub-info">
 
         <!-- 平均評価 -->
-        <p class="text-muted mb-3">
+        <p class="rating-text">
           平均評価：
           <?php if ($stat['avg_rating']): ?>
-            <?php
-            $avg = (float)$stat['avg_rating'];
-            $fullStars = floor($avg);
-            $half = ($avg - $fullStars >= 0.5);
-            ?>
-            <span class="text-warning">
+            <span class="rating-stars">
+              <?php
+              $avg = (float)$stat['avg_rating'];
+              $fullStars = floor($avg);
+              $half = ($avg - $fullStars >= 0.5);
+              ?>
               <?php for ($i = 0; $i < $fullStars; $i++): ?><i class="bi bi-star-fill"></i><?php endfor; ?>
               <?php if ($half): ?><i class="bi bi-star-half"></i><?php endif; ?>
               <?php for ($i = $fullStars + ($half ? 1 : 0); $i < 5; $i++): ?><i class="bi bi-star"></i><?php endfor; ?>
@@ -204,9 +401,12 @@ $recommended = $stReco->fetchAll();
 
         <a href="#review-section" class="btn-review">レビューを見る</a>
 
-        <p class="fs-4 fw-bold mt-2">¥<?= number_format((int)$product['price']) ?></p>
       </div>
 
+      <!-- 価格 -->
+      <p class="product-price">¥<?= number_format((int)$product['price']) ?></p>
+
+      <!-- アクション -->
       <div class="action-row">
         <p class="form-label"><strong>数量</strong>
           <select name="count" class="form-select">
@@ -217,14 +417,14 @@ $recommended = $stReco->fetchAll();
         </p>
 
         <form action="cart-insert.php" method="get">
-          <input type="hidden" name="product_id" value="<?= (int)$product['id'] ?>">
+          <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
           <input type="hidden" name="name" value="<?= e($product['name']) ?>">
-          <input type="hidden" name="price" value="<?= (int)$product['price'] ?>">
+          <input type="hidden" name="price" value="<?= $product['price'] ?>">
           <button class="btn-buy"><i class="bi bi-bag-plus"></i> カートに入れる</button>
         </form>
 
         <?php if ($cid > 0): ?>
-          <button class="btn-fav" data-id="<?= (int)$product['id'] ?>" data-fav="<?= $isFav ? 1 : 0 ?>">
+          <button class="btn-fav" data-id="<?= $product['id'] ?>" data-fav="<?= $isFav ? 1 : 0 ?>">
             <i class="bi <?= $isFav ? 'bi-heart-fill' : 'bi-heart' ?>"></i> お気に入り
           </button>
         <?php else: ?>
@@ -233,31 +433,35 @@ $recommended = $stReco->fetchAll();
       </div>
     </div>
 
+
     <div class="hero-image">
       <img src="<?= e($product['image_url']) ?>">
     </div>
+
   </div>
 
+
+
+
+  <!-- ===============================
+       SPEC SECTION
+  =============================== -->
+
   <?php
-  /* 説明 → テーブル化 */
   $desc = $product['description'] ?? '';
-  $desc = preg_replace('/(kcal)/i', "$1\n", $desc);
-  $desc = preg_replace('/(\dg)/i', "$1\n", $desc);
   $lines = preg_split('/\r\n|\r|\n/', trim($desc));
 
   function splitLine($line)
   {
-    $line = trim($line);
     if (strpos($line, ':') !== false) return explode(':', $line, 2);
     if (strpos($line, '：') !== false) return explode('：', $line, 2);
     return [$line, ""];
   }
   ?>
 
-  <!-- TABLE + IMAGES + おすすめスライダー -->
-  <div class="spec-container">
+  <div class="section-block spec-container">
 
-    <!-- LEFT (テーブル) -->
+    <!-- LEFT TABLE -->
     <div style="flex:1;">
       <table class="table-spec">
         <tbody>
@@ -273,10 +477,9 @@ $recommended = $stReco->fetchAll();
       </table>
     </div>
 
-    <!-- RIGHT (画像 + おすすめスライダー) -->
+    <!-- RIGHT IMAGES + SLIDER -->
     <div style="flex:1;">
 
-      <!-- 画像 -->
       <div class="spec-images mb-4">
         <div class="spec-img-box"><img src="./image/noshi.jpg"></div>
         <div class="spec-img-box"><img src="./image/wrap.jpg"></div>
@@ -284,7 +487,6 @@ $recommended = $stReco->fetchAll();
         <div class="spec-img-box"><img src="./image/bag.jpg"></div>
       </div>
 
-      <!-- ===== おすすめスライダー-->
       <?php if ($recommended): ?>
         <h3 class="reco-title my-5">こちらもおすすめ</h3>
 
@@ -307,9 +509,8 @@ $recommended = $stReco->fetchAll();
                             <?= e($p['name']) ?>
                           </h6>
                           <p class="text-muted small mb-2">¥<?= number_format($p['price']) ?></p>
-                          <a href="detail.php?id=<?= (int)$p['id'] ?>"
-                            class="btn btn-sm btn-outline-primary w-100"
-                            style="font-size:0.75rem;">詳細</a>
+                          <a href="detail.php?id=<?= $p['id'] ?>"
+                            class="btn btn-sm btn-outline-primary w-100">詳細</a>
                         </div>
                       </div>
                     </div>
@@ -319,13 +520,11 @@ $recommended = $stReco->fetchAll();
             <?php endforeach; ?>
           </div>
 
-          <button class="carousel-control-prev" type="button"
-            data-bs-target="#recoCarousel" data-bs-slide="prev">
+          <button class="carousel-control-prev" type="button" data-bs-target="#recoCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
           </button>
 
-          <button class="carousel-control-next" type="button"
-            data-bs-target="#recoCarousel" data-bs-slide="next">
+          <button class="carousel-control-next" type="button" data-bs-target="#recoCarousel" data-bs-slide="next">
             <span class="carousel-control-next-icon"></span>
           </button>
 
@@ -335,14 +534,20 @@ $recommended = $stReco->fetchAll();
     </div>
   </div>
 
-  <!-- ===== レビュー ===== -->
-  <section id="review-section" class="review">
+
+
+
+  <!-- ===============================
+       REVIEW SECTION
+  =============================== -->
+  <section id="review-section" class="section-block review">
+
     <h2 class="mb-4 text-center">レビュー</h2>
 
     <p class="text-muted mb-3">
       平均評価：
       <?php if ($stat['avg_rating']): ?>
-        <?= $stat['avg_rating'] ?> / 5（<?= (int)$stat['cnt'] ?>件）
+        <?= $stat['avg_rating'] ?> / 5（<?= $stat['cnt'] ?>件）
       <?php else: ?>
         —（0件）
       <?php endif; ?>
@@ -367,6 +572,9 @@ $recommended = $stReco->fetchAll();
     <?php else: ?>
       <p>まだレビューはありません。</p>
     <?php endif; ?>
+
   </section>
 
-  <?php require_once 'footer.php'; ?>
+</div>
+
+<?php require_once 'footer.php'; ?>
