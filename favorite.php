@@ -1,7 +1,4 @@
 <?php
-require_once 'app.php';
-require_once 'header.php';
-
 echo '<div class="container py-4">';
 
 if (!isset($_SESSION['customer'])) {

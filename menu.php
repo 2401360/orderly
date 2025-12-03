@@ -1,5 +1,4 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
 $me = $_SESSION['customer'] ?? null;
 $is_admin = isset($me['role']) && $me['role'] === 'admin';
 ?>

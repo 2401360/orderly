@@ -1,7 +1,12 @@
 <?php
 require_once 'app.php';
-require_once 'header.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 unset($_SESSION['customer']);
+
 try {
     $pdo = db();
     $sql = $pdo->prepare('SELECT * FROM customer WHERE login = ? LIMIT 1');
@@ -10,26 +15,48 @@ try {
     $ok = $user && password_verify($_POST['password'] ?? '', $user['password']);
 
     if (!$ok) {
-        usleep(250000);
+        usleep(250000); // 遅延
     }
+
     if ($ok) {
-        session_regenerate_id(true);
+        session_regenerate_id(true); // HTML 出力より前なのでOK
         $_SESSION['customer'] = [
             'id'      => (int)$user['id'],
             'name'    => $user['name'],
             'address' => $user['address'],
             'login'   => $user['login'],
-            'role'   => $user['role'],
-
+            'role'    => $user['role'],
         ];
-        require_once 'header.php';
-        echo '<div class="container pt-3"><div class="alert alert-success">いらっしゃいませ、' . e($_SESSION['customer']['name']) . ' さん。</div></div>';
-        echo '<div class="container pb-3"><a class="btn btn-primary" href="index.php">トップへ</a></div>';
+        $login_success = true;
     } else {
-        require_once 'header.php';
-        echo '<div class="container pt-3"><div class="alert alert-danger">ログイン名またはパスワードが違います。</div></div>';
+        $login_success = false;
     }
 } catch (Throwable $e) {
-    echo '<div class="container pt-3"><div class="alert alert-danger">ログイン処理でエラーが発生しました。</div></div>';
+    $login_success = null; // エラー扱い
 }
-require_once 'footer.php';
+
+// ここから画面出力開始
+$page_title = 'Login result';
+require_once 'header.php';
+?>
+
+<div class="container pt-3">
+    <?php if ($login_success === true): ?>
+        <div class="alert alert-success">
+            いらっしゃいませ、<?php echo e($_SESSION['customer']['name']); ?> さん。
+        </div>
+        <a class="btn btn-primary" href="index.php">トップへ</a>
+
+    <?php elseif ($login_success === false): ?>
+        <div class="alert alert-danger">
+            ログイン名またはパスワードが違います。
+        </div>
+
+    <?php else: ?>
+        <div class="alert alert-danger">
+            ログイン処理でエラーが発生しました。
+        </div>
+    <?php endif; ?>
+</div>
+
+<?php require_once 'footer.php'; ?>
