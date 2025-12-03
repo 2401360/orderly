@@ -37,29 +37,32 @@ $st = $pdo->prepare('SELECT name FROM product WHERE id = ?');
 $st->execute([$productId]);
 $product = $st->fetch(PDO::FETCH_ASSOC);
 ?>
-<h1 class="mb-3">レビューを書く：<?= htmlspecialchars($product['name'] ?? '商品', ENT_QUOTES, 'UTF-8') ?></h1>
+<div class="container mt-5">
+  <h1 class="mb-3">レビューを書く：<?= htmlspecialchars($product['name'] ?? '商品', ENT_QUOTES, 'UTF-8') ?></h1>
 
-<form action="review-insert.php" method="post" class="vstack gap-3">
-  <input type="hidden" name="product_id" value="<?= $productId ?>">
+  <form action="review-insert.php" method="post" class="vstack gap-3">
+    <input type="hidden" name="product_id" value="<?= $productId ?>">
 
-  <div>
-    <label class="form-label">評価（1〜5）</label>
-    <select name="rating" class="form-select" require_onced>
-      <?php for ($i = 1; $i <= 5; $i++): ?>
-        <option value="<?= $i ?>" <?= (isset($myReview['rating']) && (int)$myReview['rating'] === $i) ? 'selected' : ''; ?>>
-          <?= $i ?>
-        </option>
-      <?php endfor; ?>
-    </select>
-  </div>
+    <div>
+      <label class="form-label">評価（1〜5）</label>
+      <select name="rating" class="form-select" require_onced>
+        <?php for ($i = 1; $i <= 5; $i++): ?>
+          <option value="<?= $i ?>" <?= (isset($myReview['rating']) && (int)$myReview['rating'] === $i) ? 'selected' : ''; ?>>
+            <?= $i ?>
+          </option>
+        <?php endfor; ?>
+      </select>
+    </div>
 
-  <div>
-    <label class="form-label">コメント</label>
-    <textarea name="comment" rows="5" class="form-control" maxlength="1000"><?= htmlspecialchars($myReview['comment'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
-  </div>
+    <div>
+      <label class="form-label">コメント</label>
+      <textarea name="comment" rows="5" class="form-control" maxlength="1000"><?= htmlspecialchars($myReview['comment'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+    </div>
 
-  <div class="d-flex gap-2">
-    <button type="submit" class="btn btn-primary"><?= $myReview ? '更新する' : '投稿する' ?></button>
-    <a class="btn btn-outline-secondary" href="detail.php?id=<?= $productId ?>">商品詳細へ戻る</a>
-  </div>
-</form>
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary"><?= $myReview ? '更新する' : '投稿する' ?></button>
+      <a class="btn btn-outline-secondary" href="detail.php?id=<?= $productId ?>">商品詳細へ戻る</a>
+    </div>
+  </form>
+</div>
+<?php require_once 'footer.php'; ?>
