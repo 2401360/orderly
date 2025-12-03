@@ -53,14 +53,6 @@ function category_plate($cat)
 }
 ?>
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Noto Sans JP', sans-serif;
-        background-color: #F8F1E7;
-        color: #000000ff;
-    }
-
     .showcase-container {
         position: relative;
         width: 1202px;
