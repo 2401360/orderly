@@ -53,25 +53,25 @@ $recommended = $stReco->fetchAll();
         <div class="section-title">ＧＥＮＲＥ</div>
         <div class="grid">
             <div>
-                <a href="product.php?q=&cat=ホールケーキ" class="card">
+                <a href="product.php?category=ホールケーキ" class="card">
                     <img src="image/ホールケーキ③.jpg" alt="">
                     <div>ホールケーキ</div>
                 </a>
             </div>
             <div>
-                <a href="product.php?q=&cat=クッキー" class="card">
+                <a href="product.php?category=クッキー" class="card">
                     <img src="image/kultuki-.jpg" alt="">
                     <div>クッキー</div>
                 </a>
             </div>
             <div>
-                <a href="product.php?q=&cat=チョコレート" class="card">
+                <a href="product.php?category=チョコレート" class="card">
                     <img src="image/tyokore-to.jpg" alt="">
                     <div>チョコレート</div>
                 </a>
             </div>
             <div>
-                <a href="product.php?q=&cat=ショートケーキ" class="card">
+                <a href="product.php?category=ショートケーキ" class="card">
                     <img src="image/ショートケーキ②.jpg" alt="">
                     <div>ショートケーキ</div>
                 </a>
