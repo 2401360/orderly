@@ -148,12 +148,16 @@ $recommended = $stReco->fetchAll();
   }
 
   .product-hero .btn-fav {
-    background-color: #ff4d4d;
+    background-color: #222222;
     color: #fff;
   }
 
   .product-hero .btn-fav:hover {
-    background-color: #e60000;
+    background-color: #2B2B2B;
+  }
+
+  .btn-fav i.bi-heart-fill {
+    color: #DA3E50;
   }
 
   @media (max-width: 768px) {
@@ -556,5 +560,39 @@ $recommended = $stReco->fetchAll();
   </section>
 
 </div>
+
+<script>
+  document.addEventListener("click", async function(e) {
+    const btn = e.target.closest(".btn-fav");
+    if (!btn) return;
+
+    const pid = btn.dataset.id;
+    const isFav = Number(btn.dataset.fav);
+
+    const url = isFav ? "favorite-delete.php" : "favorite-insert.php";
+
+    const fd = new FormData();
+    fd.append("product_id", pid);
+
+    const res = await fetch(url, {
+      method: "POST",
+      body: fd
+    });
+
+    if (!res.ok) {
+      alert("通信エラー");
+      return;
+    }
+
+    // UI 更新
+    if (isFav) {
+      btn.dataset.fav = "0";
+      btn.innerHTML = '<i class="bi bi-heart"></i> お気に入り';
+    } else {
+      btn.dataset.fav = "1";
+      btn.innerHTML = '<i class="bi bi-heart-fill"></i> お気に入り';
+    }
+  });
+</script>
 
 <?php require_once 'footer.php'; ?>

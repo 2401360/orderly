@@ -1,28 +1,26 @@
 <?php
 require_once 'app.php';
-
-if (!isset($_SESSION['customer'])) {
-    flash('warning', 'お気に入りに追加するにはログインしてください。');
-    header('Location: login-input.php');
-    exit;
-}
-
-$productId = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
-if ($productId <= 0) {
-    flash('danger', '不正な商品です。');
-    header('Location: product.php');
-    exit;
-}
+if (session_status() === PHP_SESSION_NONE) session_start();
 
 $pdo = db();
-$stm = $pdo->prepare('INSERT IGNORE INTO favorite (customer_id, product_id) VALUES (?, ?)');
-$stm->execute([$_SESSION['customer']['id'], $productId]);
 
-if ($stm->rowCount() === 0) {
-    flash('info', 'この商品はすでにお気に入りに入っています。');
-} else {
-    flash('success', 'お気に入りに追加しました。');
+$cid = $_SESSION['customer']['id'] ?? 0;
+$pid = $_POST['product_id'] ?? 0;
+
+if ($cid <= 0 || $pid <= 0) {
+    http_response_code(400);
+    echo "invalid";
+    exit;
 }
 
-header('Location: favorite-show.php');
+// すでにあるかチェック
+$st = $pdo->prepare("SELECT 1 FROM favorite WHERE customer_id=? AND product_id=? LIMIT 1");
+$st->execute([$cid, $pid]);
+
+if (!$st->fetchColumn()) {
+    $ins = $pdo->prepare("INSERT INTO favorite (customer_id, product_id) VALUES (?, ?)");
+    $ins->execute([$cid, $pid]);
+}
+
+echo "ok";
 exit;

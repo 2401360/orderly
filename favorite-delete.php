@@ -1,13 +1,19 @@
 <?php
 require_once 'app.php';
-if (!isset($_SESSION['customer'])) {
-    header('Location: login-input.php');
-    exit;
-}
+if (session_status() === PHP_SESSION_NONE) session_start();
 
 $pdo = db();
-$del = $pdo->prepare('DELETE FROM favorite WHERE customer_id=? AND product_id=?');
-$del->execute([$_SESSION['customer']['id'], (int)($_REQUEST['id'] ?? 0)]);
 
-header('Location: favorite-show.php');
+$cid = $_SESSION['customer']['id'] ?? 0;
+$pid = $_POST['product_id'] ?? 0;
+
+if ($cid <= 0 || $pid <= 0) {
+    http_response_code(400);
+    exit("invalid");
+}
+
+$del = $pdo->prepare("DELETE FROM favorite WHERE customer_id=? AND product_id=?");
+$del->execute([$cid, $pid]);
+
+echo "ok";
 exit;
