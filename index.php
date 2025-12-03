@@ -227,7 +227,7 @@ $recommended = $stReco->fetchAll();
 
 </div> <!-- /#main-content -->
 
-<?php require 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>
 
 
 <!-- スライダー無限ループ JS -->
@@ -289,36 +289,3 @@ $recommended = $stReco->fetchAll();
         mainContent.classList.add('fade-in');
     }
 </script>
-
-
-
-<!-- スライダー CSS -->
-<style>
-    .slider-track {
-        width: 100%;
-        overflow: hidden;
-    }
-
-    #sliderMover {
-        display: flex;
-        gap: 18px;
-        animation: slide 4s linear infinite;
-    }
-
-    .slide-img {
-        width: 200px;
-        height: 140px;
-        border-radius: 12px;
-        object-fit: cover;
-    }
-
-    @keyframes slide {
-        from {
-            transform: translateX(0);
-        }
-
-        to {
-            transform: translateX(-218px);
-        }
-    }
-</style>

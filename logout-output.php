@@ -1,14 +1,32 @@
 <?php
 require_once 'app.php';
-require_once 'header.php';
-$_SESSION = [];
 
-if (ini_get('session.use_cookies')) {
-  $params = session_get_cookie_params();
-  setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+// セッション開始（まだなら）
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
 }
 
+// セッション情報を空にする
+$_SESSION = [];
+
+// Cookie を削除
+if (ini_get('session.use_cookies')) {
+  $params = session_get_cookie_params();
+  setcookie(
+    session_name(),
+    '',
+    time() - 42000,
+    $params['path'],
+    $params['domain'],
+    $params['secure'],
+    $params['httponly']
+  );
+}
+
+// セッション破棄
 session_destroy();
+
+// ここから HTML 出力開始
 $page_title = 'Logged out';
 require_once 'header.php';
 ?>

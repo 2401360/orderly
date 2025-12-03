@@ -6,7 +6,7 @@ require_once 'header.php';
 $is_admin = (isset($_SESSION['customer']['role']) && $_SESSION['customer']['role'] === 'admin');
 if (!$is_admin) {
     echo '<div class="container pt-3"><div class="alert alert-danger">権限がありません。（管理者のみ）</div></div>';
-    require 'footer.php';
+    require_once 'footer.php';
     exit;
 }
 $pdo = db();

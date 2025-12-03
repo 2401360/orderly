@@ -21,7 +21,6 @@ if ($cid > 0 && $product) {
 }
 
 if (!$product) {
-  http_response_code(404);
   echo '<div class="container py-5"><div class="alert alert-danger">商品が見つかりません。</div></div>';
   exit;
 }
@@ -77,115 +76,6 @@ $stReco->bindValue(':cid2', $cid, PDO::PARAM_INT);
 $stReco->execute();
 $recommended = $stReco->fetchAll();
 ?>
-
-<style>
-  .container {
-    margin: 0 20px;
-    max-width: 96vw;
-  }
-
-  .product-hero {
-    padding: 40px 20px;
-    margin-bottom: 40px;
-    width: 96%;
-    display: flex;
-    align-items: center;
-    background: #FFF6EE;
-    box-shadow: none;
-    margin-left: 21px;
-  }
-
-  .product-hero .hero-image {
-    flex: 1 1 40%;
-    max-width: 500px;
-    order: 0;
-  }
-
-  .product-hero .hero-image img {
-    width: 100%;
-    border-radius: 12px;
-  }
-
-  .product-hero .hero-text {
-    flex: 1 1 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 20px;
-    padding-left: 50px;
-    order: 1;
-    text-align: left;
-  }
-
-  .product-hero .btn-review:hover {
-    background-color: #e6a800;
-  }
-
-  .product-hero .btn-buy,
-  .product-hero .btn-fav {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: bold;
-    border: none;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .product-hero .btn-buy {
-    background-color: #693529;
-    color: #fff;
-  }
-
-  .product-hero .btn-buy:hover {
-    background-color: #e6a800;
-  }
-
-  .product-hero .btn-fav {
-    background-color: #ff4d4d;
-    color: #fff;
-    text-align: center;
-  }
-
-  .product-hero .btn-fav:hover {
-    background-color: #e60000;
-  }
-
-  .product-hero .action-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .product-hero .action-row>* {
-    width: 100%;
-  }
-
-  @media (max-width: 768px) {
-    .product-hero {
-      flex-direction: column;
-      padding: 20px;
-    }
-
-    .product-hero .hero-image,
-    .product-hero .hero-text {
-      flex: 1 1 100%;
-      max-width: 100%;
-      order: initial;
-    }
-
-    .product-hero .hero-text {
-      padding-left: 0;
-    }
-
-    .form-label {
-      display: block;
-      margin-bottom: 10px;
-    }
-  }
-</style>
 
 <div class="container py-4">
   <div class="product-hero">
@@ -269,90 +159,6 @@ $recommended = $stReco->fetchAll();
       <?php endif; ?>
     </div>
   </div>
-  <?php
-  // ===== STYLE =====
-  ?>
-  <style>
-    .spec-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding-left: 33px;
-      padding-right: 9px;
-      margin: 10px 20px;
-      box-sizing: border-box;
-      margin-left: -10px;
-    }
-
-    .spec-images {
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-      flex-wrap: nowrap;
-    }
-
-    .spec-images img {
-      width: 120px;
-      height: auto;
-      border-radius: 8px;
-    }
-
-    .spec-img-box {
-      text-align: center;
-    }
-
-    .spec-img-box img {
-      width: 130px;
-      height: auto;
-      border-radius: 10px;
-      display: block;
-      margin: 0 auto 8px;
-    }
-
-    .spec-caption {
-      font-size: 0.9rem;
-      color: #555;
-    }
-
-    .table-spec {
-      width: 100%;
-      max-width: 600px;
-      border-collapse: collapse;
-      font-size: 0.95rem;
-      color: #444;
-      margin-bottom: 40px;
-    }
-
-    .table-spec td {
-      padding: 10px 20px;
-      border-bottom: 1px solid #e0dcd3;
-      vertical-align: top;
-    }
-
-    .table-spec tr:last-child td {
-      border-bottom: none;
-    }
-
-    .table-spec .td-key {
-      width: 40%;
-      background-color: #F9F6ED;
-      font-weight: 600;
-    }
-
-    .table-spec .td-value {
-      width: 65%;
-    }
-
-    .related-products {
-      background-color: #F9F6ED;
-      padding: 20px 20px;
-    }
-
-    .review {
-      background-color: #EFE8E4;
-      padding: 30px 30px;
-    }
-  </style>
 
   <?php
   // ===== PROCESS DESCRIPTION =====
@@ -426,59 +232,6 @@ $recommended = $stReco->fetchAll();
       </div>
     </div>
   </div>
-  <div class="mt-25px mt-md-55px pt-25px pt-md-35px" style="border-top: 2px solid #230e02;"></div>
-  <?php
-  if (!function_exists('e')) {
-    function e($s)
-    {
-      return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
-    }
-  }
-  // Lấy sản phẩm liên quan (cùng category, không trùng id hiện tại)
-  $related = [];
-  if (!empty($product['category'])) {
-    $sql = "
-        SELECT p.*, " . ($cid > 0 ? "EXISTS(SELECT 1 FROM favorite f WHERE f.customer_id = :cid AND f.product_id = p.id) AS is_fav" : "0 AS is_fav") . "
-        FROM product p
-        WHERE p.category = :cat AND p.id != :id
-        ORDER BY p.created_at DESC
-        LIMIT 8
-      ";
-    $stmt = $pdo->prepare($sql);
-    $params = [
-      ':cat' => $product['category'],
-      ':id'  => $product['id']
-    ];
-    if ($cid > 0) $params[':cid'] = $cid;
-    $stmt->execute($params);
-    $related = $stmt->fetchAll();
-  }
-  ?>
-  <!-- ===== RELATED PRODUCTS SLIDER ===== -->
-  <?php
-  $related = [];
-  $uploadDir = __DIR__ . '/uploads/products/';
-  $category = $product['category'] ?? '';
-
-  if ($category && is_dir($uploadDir)) {
-    $files = glob($uploadDir . '*');
-
-    foreach ($files as $file) {
-      $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-      if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) continue;
-      $filename = basename($file);
-      if (stripos($filename, $category) !== false || stripos($filename, 'product') !== false) {
-        $related[] = [
-          'id' => rand(1000, 9999),
-          'name' => pathinfo($filename, PATHINFO_FILENAME),
-          'price' => rand(500, 5000),
-          'image_url' => $filename
-        ];
-      }
-    }
-    $related = array_slice($related, 0, 8);
-  }
-  ?>
 
   <!-- RELATED PRODUCTS SLIDER -->
   <section class="related-products mt-5">
@@ -533,7 +286,6 @@ $recommended = $stReco->fetchAll();
       </div>
     <?php endif; ?>
   </section>
-  <div class="mt-25px mt-md-55px pt-25px pt-md-35px" style="border-top: 2px solid #230e02; margin-top: 50px;"></div>
   <!-- レビュー表示 -->
   <section id="review-section" class="review mt-5">
     <h2 class="mb-5 text-center">レビュー</h2>
@@ -609,7 +361,6 @@ $recommended = $stReco->fetchAll();
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   (function() {
     const LOGGED_IN = <?= $cid > 0 ? 'true' : 'false' ?>;
@@ -675,3 +426,4 @@ $recommended = $stReco->fetchAll();
     });
   })();
 </script>
+<?php require_once 'footer.php'; ?>

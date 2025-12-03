@@ -8,6 +8,8 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; script-src 'self' https: 'unsafe-inline';">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
   <style>
     body,
     html {
@@ -21,6 +23,35 @@
     a {
       color: inherit;
       text-decoration: none;
+    }
+
+    /* 写真スライダー用 */
+    .slider-track {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #sliderMover {
+      display: flex;
+      gap: 18px;
+      animation: slide 4s linear infinite;
+    }
+
+    .slide-img {
+      width: 200px;
+      height: 140px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    @keyframes slide {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-218px);
+      }
     }
 
     /* オープニング動画用 */
@@ -335,6 +366,252 @@
     .card-hover:hover {
       transform: translateY(-2px);
       transition: .15s ease;
+    }
+
+    /* purchase-input page */
+    .customer-info {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .customer-info h1 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #333;
+      border-left: 4px solid #0d6efd;
+      padding-left: 10px;
+      margin-bottom: 15px;
+    }
+
+    .customer-info p {
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .customer-info p span {
+      font-weight: bold;
+      color: #555;
+    }
+
+    /* detail page */
+    .product-hero {
+      display: flex;
+      align-items: center;
+      background: #FFF6EE;
+      box-sizing: border-box;
+      padding: 40px;
+      margin-bottom: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      gap: 40px;
+      border: 1px solid #f0f0f0;
+      transition: box-shadow .25s ease;
+    }
+
+    .product-hero:hover {
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .product-hero .hero-image {
+      flex: 1 1 40%;
+      max-width: 500px;
+      order: 0;
+    }
+
+    .product-hero .hero-image img {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .product-hero .hero-text {
+      flex: 1 1 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      padding-left: 50px;
+      order: 1;
+      text-align: left;
+    }
+
+    .product-hero .btn-review:hover {
+      background-color: #e6a800;
+    }
+
+    .product-hero .btn-buy,
+    .product-hero .btn-fav {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      border: none;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .product-hero .btn-buy {
+      background-color: #693529;
+      color: #fff;
+    }
+
+    .product-hero .btn-buy:hover {
+      background-color: #e6a800;
+    }
+
+    .product-hero .btn-fav {
+      background-color: #ff4d4d;
+      color: #fff;
+      text-align: center;
+    }
+
+    .product-hero .btn-fav:hover {
+      background-color: #e60000;
+    }
+
+    .product-hero .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .product-hero .action-row>* {
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .product-hero {
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .product-hero .hero-image,
+      .product-hero .hero-text {
+        flex: 1 1 100%;
+        max-width: 100%;
+        order: initial;
+      }
+
+      .product-hero .hero-text {
+        padding-left: 0;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 10px;
+      }
+    }
+
+    .spec-container {
+      background-color: #FFFFFF;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      box-sizing: border-box;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      gap: 40px;
+      border: 1px solid #f0f0f0;
+      transition: box-shadow .25s ease;
+    }
+
+    .spec-container:hover {
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .spec-images {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      flex-wrap: nowrap;
+    }
+
+    .spec-images img {
+      width: 120px;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .spec-img-box {
+      text-align: center;
+    }
+
+    .spec-img-box img {
+      width: 130px;
+      height: auto;
+      border-radius: 10px;
+      display: block;
+      margin: 0 auto 8px;
+    }
+
+    .spec-caption {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .table-spec {
+      width: 100%;
+      max-width: 600px;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      color: #444;
+      margin-bottom: 40px;
+      border: 1px solid #ddd;
+    }
+
+    .table-spec td {
+      padding: 10px 20px;
+      border-bottom: 1px solid #e0dcd3;
+      vertical-align: top;
+    }
+
+    .table-spec tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-spec .td-key {
+      width: 40%;
+      background-color: #F9F6ED;
+      font-weight: 600;
+    }
+
+    .table-spec .td-value {
+      width: 65%;
+    }
+
+    .related-products {
+      background-color: #F9F6ED;
+      box-sizing: border-box;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      gap: 40px;
+      border: 1px solid #f0f0f0;
+      transition: box-shadow .25s ease;
+    }
+
+    .related-products:hover {
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .review {
+      background-color: #EFE8E4;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      gap: 40px;
+      border: 1px solid #f0f0f0;
+      transition: box-shadow .25s ease;
+    }
+
+    .review:hover {
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
     }
   </style>
 </head>
