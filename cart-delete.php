@@ -1,11 +1,12 @@
 <?php
+session_start();
 require_once 'app.php';
-require_once 'header.php';
+
+$pdo = db();
 $id = $_REQUEST['id'] ?? null;
 if ($id !== null && isset($_SESSION['product'][$id])) {
-  unset($_SESSION['product'][$id]);
-  echo '<div class="container pt-3"><div class="alert alert-danger">カートから商品を削除しました。</div></div>';
+    unset($_SESSION['product'][$id]);
+    echo '<div class="container pt-3"><div class="alert alert-danger">カートから商品を削除しました。</div></div>';
 }
-require_once 'cart.php';
-?>
-<?php require_once 'footer.php'; ?>
+header("Location: cart-show.php");
+exit;
