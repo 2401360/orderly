@@ -406,18 +406,24 @@ $recommended = $stReco->fetchAll();
       <!-- アクション -->
       <div class="action-row">
         <p class="form-label"><strong>数量</strong>
-          <select name="count" class="form-select">
+          <select id="countSelect" class="form-select">
             <?php for ($i = 1; $i <= 10; $i++): ?>
               <option value="<?= $i ?>"><?= $i ?></option>
             <?php endfor; ?>
           </select>
         </p>
 
-        <form action="cart-insert.php" method="get">
+        <form action="cart-insert.php" method="post" id="cartForm">
           <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
           <input type="hidden" name="name" value="<?= e($product['name']) ?>">
           <input type="hidden" name="price" value="<?= $product['price'] ?>">
-          <button class="btn-buy"><i class="bi bi-bag-plus"></i> カートに入れる</button>
+
+          <!-- ★ ここに hidden count を追加（選択された値を入れる） -->
+          <input type="hidden" name="count" id="countHidden" value="1">
+
+          <button type="submit" class="btn-buy">
+            <i class="bi bi-bag-plus"></i> カートに入れる
+          </button>
         </form>
 
         <?php if ($cid > 0): ?>
@@ -428,6 +434,17 @@ $recommended = $stReco->fetchAll();
           <a class="btn-fav" href="login-input.php"><i class="bi bi-heart"></i> お気に入り</a>
         <?php endif; ?>
       </div>
+
+      <!-- ★ select → hidden に値をコピーする JS -->
+      <script>
+        const select = document.getElementById('countSelect');
+        const hidden = document.getElementById('countHidden');
+
+        select.addEventListener('change', function() {
+          hidden.value = this.value;
+        });
+      </script>
+
     </div>
 
 
