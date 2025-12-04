@@ -1,6 +1,5 @@
 <?php
 require_once 'app.php';
-require_once 'header.php';
 
 // 商品情報を POST で受け取る
 $id    = $_POST['product_id'] ?? null;
@@ -35,13 +34,5 @@ $_SESSION['product'][$id] = [
   'count' => $newCount
 ];
 
-// 完了メッセージ
-echo '<div class="container pt-3">
-        <div class="alert alert-success">
-          カートに商品を追加しました。（個数: ' . $newCount . '）
-        </div>
-      </div>';
-
-// カート画面を表示
-require_once 'cart.php';
-require_once 'footer.php';
+header("Location: cart-show.php");
+exit;
