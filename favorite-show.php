@@ -46,11 +46,47 @@ if (!$rows) {
                     <td><?= $id ?></td>
                     <td><a href="detail.php?id=<?= $id ?>"><?= htmlspecialchars($r['name']) ?></a></td>
                     <td>¥<?= number_format((int)$r['price']) ?></td>
-                    <td><a class="btn btn-sm btn-outline-danger" href="favorite-delete.php?id=<?= $id ?>"><i class="bi bi-trash"></i> 削除</a></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-danger btn-del-fav" data-id="<?= $id ?>">
+                            <i class="bi bi-trash"></i> 削除
+                        </button>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
 <?php echo '</div>'; ?>
+<script>
+    document.addEventListener("click", async function(e) {
+
+        const btn = e.target.closest(".btn-del-fav");
+        if (!btn) return;
+
+        const pid = btn.dataset.id;
+        const row = btn.closest("tr");
+
+        const fd = new FormData();
+        fd.append("product_id", pid);
+
+        const res = await fetch("favorite-delete.php", {
+            method: "POST",
+            body: fd
+        });
+
+        if (!res.ok) {
+            alert("削除できませんでした");
+            return;
+        }
+
+        // フェードアウト後に行を削除
+        row.style.transition = "0.3s";
+        row.style.opacity = "0";
+
+        setTimeout(() => {
+            row.remove();
+        }, 300);
+    });
+</script>
+
 <?php require_once 'footer.php'; ?>
