@@ -2,7 +2,20 @@
 require 'header.php'; ?>
 <?php require 'db-connect.php'; ?>
 <div class="container py-4">
-    
+
+    <!-- ▼ 動画セクション（追加部分） -->
+    <div class="mb-4">
+        <div class="ratio ratio-16x9 rounded-3 shadow-sm overflow-hidden">
+            <!-- 仮の動画URL。完成後に差し替え -->
+            <iframe 
+                src="https://www.youtube.com/embed/XXXXXXXXXXX" 
+                title="Orderly Shop Introduction Video" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+    <!-- ▲ 動画セクションここまで -->
+
     <div class="p-4 p-md-5 mb-4 bg-light rounded-3">
         <div class="container-fluid py-2">
             <h1 class="display-6 fw-semibold">Welcome to Orderly Shop</h1>
@@ -10,16 +23,14 @@ require 'header.php'; ?>
             <a class="btn btn-primary btn-lg" href="product.php"><i class="bi bi-bag"></i> Shop Now</a>
         </div>
     </div>
-    <!-- 上記のメッセージは無くす。理由：動画の中にメッセージを表示させるため。 -->
 
     <h2 class="h4 mb-3">デザート</h2>
     <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
         <?php
         $pdo = new PDO($connect, USER, PASS);
         $sql = $pdo->query('SELECT * FROM product WHERE id NOT IN (1, 3, 5, 8) ORDER BY id LIMIT 4');
-        var_dump($sql->rowCount());
+        // var_dump($sql->rowCount()); // ←デバッグ不要なら削除
 
-        // 画像挿入が必要。
         foreach ($sql as $row):
             $id = (int)$row['id'];
         ?>
