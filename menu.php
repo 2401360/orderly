@@ -107,17 +107,17 @@ $is_admin = isset($me['role']) && $me['role'] === 'admin';
         <li class="nav-item"><a class="nav-link" href="history.php">購入履歴</a></li>
 
         <?php if ($is_admin): ?>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="adminMenu" role="button" data-bs-toggle="dropdown">
-              管理メニュー
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="adminMenu">
-              <li><a class="dropdown-item" href="admin-products.php">商品管理</a></li>
-              <li><a class="dropdown-item" href="orders-details.php">注文一覧</a></li>
-              <li><a class="dropdown-item" href="sales-details.php">商品売上</a></li>
-            </ul>
+          <li class="nav-item">
+            <a class="nav-link" href="admin-products.php">商品管理</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="orders-details.php">注文一覧</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="sales-details.php">商品売上</a>
           </li>
         <?php endif; ?>
+
 
       </ul>
 
