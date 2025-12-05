@@ -3,7 +3,6 @@ require_once 'app.php';
 $page_title = '商品管理';
 require_once 'header.php';
 
-/* ====== 管理者チェック ====== */
 $is_admin = (isset($_SESSION['customer']['role']) && $_SESSION['customer']['role'] === 'admin');
 if (!$is_admin) {
     echo '<div class="container pt-3"><div class="alert alert-danger">権限がありません。（管理者のみ）</div></div>';
@@ -13,7 +12,6 @@ if (!$is_admin) {
 
 $pdo = db();
 
-/* ====== エスケープ関数（念のため） ====== */
 if (!function_exists('e')) {
     function e($s)
     {
@@ -21,7 +19,6 @@ if (!function_exists('e')) {
     }
 }
 
-/* ====== 画像アップロード ====== */
 const UPLOAD_REL = 'uploads';
 $uploadDir = __DIR__ . '/' . UPLOAD_REL;
 if (!is_dir($uploadDir)) {
@@ -68,13 +65,11 @@ function handle_image_upload(array &$errors): string
     return $destRel;
 }
 
-/* ====== 初期変数 ====== */
 $notice = '';
 $errors = [];
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 $id = isset($_POST['id']) ? (int)$_POST['id'] : (isset($_GET['id']) ? (int)$_GET['id'] : 0);
 
-/* ====== POST処理 ====== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $id     = (int)($_POST['id'] ?? 0);
@@ -111,7 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-/* ====== 編集データ取得 ====== */
 $edit_item = null;
 if ($action === 'edit' && $id > 0) {
     $stmt = $pdo->prepare('SELECT * FROM product WHERE id=? LIMIT 1');
@@ -119,16 +113,13 @@ if ($action === 'edit' && $id > 0) {
     $edit_item = $stmt->fetch();
 }
 
-/* ====== Pagination ====== */
 $perPage = 5;
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 
-/* 商品総数 */
 $total = (int)$pdo->query('SELECT COUNT(*) FROM product')->fetchColumn();
 $totalPages = max(1, (int)ceil($total / $perPage));
 
-/* 一覧取得（LIMIT付き） */
 $stmt = $pdo->prepare('SELECT * FROM product ORDER BY id DESC LIMIT :limit OFFSET :offset');
 $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -149,7 +140,6 @@ $products = $stmt->fetchAll();
 
 
 
-    <!-- 編集フォーム -->
     <?php if ($edit_item): ?>
         <div class="card mb-4">
             <div class="card-header">編集</div>
@@ -205,7 +195,6 @@ $products = $stmt->fetchAll();
         </div>
     <?php endif; ?>
 
-    <!-- 商品一覧 -->
     <div class="card mb-4">
         <div class="card-header">商品一覧</div>
         <div class="card-body table-responsive">

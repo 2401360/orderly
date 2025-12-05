@@ -1,7 +1,5 @@
 <?php
 require_once 'app.php';
-if (session_status() === PHP_SESSION_NONE) session_start();
-
 $pdo = db();
 
 $cid = $_SESSION['customer']['id'] ?? 0;

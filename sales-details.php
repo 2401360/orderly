@@ -1,6 +1,4 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
-
 require_once 'app.php';
 require_once 'header.php';
 
@@ -13,16 +11,13 @@ if (!$is_admin) {
 
 $pdo = db();
 
-/* ===== ページネーション設定 ===== */
 $perPage = 10;
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 
-/* 全商品の件数（売上0の商品も含む） */
 $totalItems = (int)$pdo->query("SELECT COUNT(*) FROM product")->fetchColumn();
 $totalPages = max(1, ceil($totalItems / $perPage));
 
-/* ===== 商品別売上取得 (LIMIT + OFFSET) ===== */
 $sqlSales = "
 SELECT 
     p.id,
@@ -43,7 +38,6 @@ $stSales->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stSales->execute();
 $salesList = $stSales->fetchAll();
 
-/* ===== 総売上（全体） ===== */
 $sqlTotal = "
 SELECT 
     COALESCE(SUM(pd.count * p.price), 0) AS total_sales_all

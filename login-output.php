@@ -1,10 +1,6 @@
 <?php
 require_once 'app.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 unset($_SESSION['customer']);
 
 try {
@@ -19,7 +15,7 @@ try {
     }
 
     if ($ok) {
-        session_regenerate_id(true); // HTML 出力より前なのでOK
+        session_regenerate_id(true);
         $_SESSION['customer'] = [
             'id'      => (int)$user['id'],
             'name'    => $user['name'],
