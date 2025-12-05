@@ -1,12 +1,6 @@
 <?php
 require_once 'app.php';
 
-// セッション開始（まだなら）
-if (session_status() === PHP_SESSION_NONE) {
-  session_start();
-}
-
-// セッション情報を空にする
 $_SESSION = [];
 
 // Cookie を削除

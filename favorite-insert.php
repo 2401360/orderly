@@ -1,7 +1,5 @@
 <?php
 require_once 'app.php';
-if (session_status() === PHP_SESSION_NONE) session_start();
-
 $pdo = db();
 
 $cid = $_SESSION['customer']['id'] ?? 0;
@@ -13,7 +11,6 @@ if ($cid <= 0 || $pid <= 0) {
     exit;
 }
 
-// すでにあるかチェック
 $st = $pdo->prepare("SELECT 1 FROM favorite WHERE customer_id=? AND product_id=? LIMIT 1");
 $st->execute([$cid, $pid]);
 

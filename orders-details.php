@@ -12,14 +12,10 @@ if (!$is_admin) {
 
 $pdo = db();
 
-/* ==========================
-      PAGINATION SETTINGS
-   ========================== */
-$perPage = 15; // 1ページに15件
+$perPage = 15;
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 
-/* ===== 総注文行数（商品別行数） ===== */
 $sqlCount = "
 SELECT COUNT(*)
 FROM purchase pu
@@ -28,9 +24,6 @@ JOIN purchase_detail pd ON pu.id = pd.purchase_id
 $totalRows = (int)$pdo->query($sqlCount)->fetchColumn();
 $totalPages = max(1, (int)ceil($totalRows / $perPage));
 
-/* ==========================
-           注文一覧
-   ========================== */
 $sql = "
 SELECT 
     pu.id AS purchase_id,
@@ -47,7 +40,6 @@ JOIN product p ON pd.product_id = p.id
 ORDER BY pu.created_at DESC, pu.id DESC
 LIMIT :limit OFFSET :offset
 ";
-
 $st = $pdo->prepare($sql);
 $st->bindValue(':limit', $perPage, PDO::PARAM_INT);
 $st->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -71,7 +63,6 @@ $orders = $st->fetchAll();
             </tr>
         </thead>
         <tbody>
-
             <?php foreach ($orders as $o): ?>
                 <tr>
                     <td><?= htmlspecialchars($o['purchase_id']) ?></td>
@@ -83,40 +74,29 @@ $orders = $st->fetchAll();
                     <td><?= number_format($o['subtotal']) ?> 円</td>
                 </tr>
             <?php endforeach; ?>
-
             <?php if (empty($orders)): ?>
                 <tr>
                     <td colspan="7" class="text-center">注文データがありません。</td>
                 </tr>
             <?php endif; ?>
-
         </tbody>
     </table>
 
-    <!-- Pagination -->
     <nav class="mt-3">
         <ul class="pagination justify-content-center">
-
-            <!-- 前へ -->
             <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
                 <a class="page-link" href="?page=<?= $page - 1 ?>">« 前へ</a>
             </li>
-
-            <!-- ページ番号 -->
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                 <li class="page-item <?= $i == $page ? 'active' : '' ?>">
                     <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
                 </li>
             <?php endfor; ?>
-
-            <!-- 次へ -->
             <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
                 <a class="page-link" href="?page=<?= $page + 1 ?>">次へ »</a>
             </li>
-
         </ul>
     </nav>
-
 </div>
 
 <?php require_once 'footer.php'; ?>

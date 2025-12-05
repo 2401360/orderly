@@ -12,7 +12,6 @@ $login   = $editing ? ($_SESSION['customer']['login'] ?? '')   : '';
   <div class="card shadow-sm">
     <div class="card-body">
       <h1 class="h5 mb-3"><?= $editing ? 'プロフィール更新' : '新規登録' ?></h1>
-
       <form action="customer-output.php" method="post" class="vstack gap-3" novalidate>
         <div>
           <label class="form-label">名前</label>
