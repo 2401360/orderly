@@ -1,9 +1,7 @@
 <footer class="mt-4 py-4 border-top">
-
   <style>
     footer {
       background: #5A4F48;
-      /* 落ち着いたブラウン系 */
       margin: 0;
       padding: 0;
     }
@@ -16,13 +14,11 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 30px;
-
       background: #5A4F48;
       color: #FFFFFF;
       font-family: 'Noto Serif JP', serif;
     }
 
-    /* 左：地図 */
     .footer-map {
       flex: 0 0 260px;
     }
@@ -35,7 +31,6 @@
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
     }
 
-    /* 中央：店舗案内 */
     .footer-info {
       flex: 1;
       font-size: 15px;
@@ -50,7 +45,6 @@
       margin-bottom: 12px;
     }
 
-    /* 右：リンク */
     .footer-links {
       flex: 0 0 150px;
       display: flex;
@@ -64,11 +58,9 @@
       color: #FFFFFF;
       font-size: 15px;
       font-weight: 500;
-
       display: flex;
       align-items: center;
       gap: 6px;
-
       transition: 0.2s;
     }
 
@@ -77,7 +69,6 @@
       transform: translateX(-3px);
     }
 
-    /* スマホ対応 */
     @media (max-width: 768px) {
       .footer-container {
         flex-direction: column;
@@ -101,9 +92,7 @@
     }
   </style>
 
-
   <div class="footer-container">
-
     <div class="footer-map">
       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3323.83962290788!2d130.41859821182652!3d33.58351307322588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x354191b0a7a68e51%3A0xac6f704b1b5c621a!2z44CSODEyLTAwMTYg56aP5bKh55yM56aP5bKh5biC5Y2a5aSa5Yy65Y2a5aSa6aeF5Y2X77yS5LiB55uu77yR77yS4oiS77yT77yS77yS!5e0!3m2!1sja!2sjp"></iframe>
     </div>
@@ -122,7 +111,6 @@
       <a href="cart-show.php"><i class="bi bi-cart"></i> カート</a>
       <a href="history.php"><i class="bi bi-clock-history"></i> 購入履歴</a>
     </div>
-
   </div>
 </footer>
 

@@ -28,7 +28,6 @@ function e(string $s): string
     return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 }
 
-
 function csrf_token(): string
 {
     if (empty($_SESSION['csrf'])) {
@@ -36,10 +35,12 @@ function csrf_token(): string
     }
     return $_SESSION['csrf'];
 }
+
 function csrf_field(): string
 {
     return '<input type="hidden" name="csrf" value="' . e(csrf_token()) . '">';
 }
+
 function csrf_verify(): void
 {
     $token = $_POST['csrf'] ?? $_GET['csrf'] ?? '';
@@ -51,18 +52,17 @@ function csrf_verify(): void
     }
 }
 
-
 function flash(string $type, string $msg): void
 {
     $_SESSION['flash'][] = ['t' => $type, 'm' => $msg];
 }
+
 function flashes(): array
 {
     $msgs = $_SESSION['flash'] ?? [];
     unset($_SESSION['flash']);
     return $msgs;
 }
-
 
 function cart_count(): int
 {
