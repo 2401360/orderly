@@ -16,7 +16,6 @@ try {
     $login    = post('login');
     $password = post('password');
 
-
     $errors = [];
     if ($name === '')     $errors[] = '名前を入力してください。';
     if ($address === '')  $errors[] = '住所を入力してください。';
@@ -31,7 +30,6 @@ try {
         exit;
     }
 
-
     if (isset($_SESSION['customer'])) {
         $id  = (int)$_SESSION['customer']['id'];
         $chk = $pdo->prepare('SELECT id FROM customer WHERE id != ? AND login = ? LIMIT 1');
@@ -45,7 +43,6 @@ try {
         require_once 'footer.php';
         exit;
     }
-
 
     $hash = password_hash($password, PASSWORD_DEFAULT);
 
